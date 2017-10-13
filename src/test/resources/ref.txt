@@ -1,0 +1,3 @@
+chrom	chromStart	chromEnd
+Chromosome	5	55
+Chromosome	204	255
