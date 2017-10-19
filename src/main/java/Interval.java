@@ -1,12 +1,16 @@
 public class Interval {
-    String name;
-    int startIndex;
-    int endIndex;
+    private String name;
+    private int startIndex;
+    private int endIndex;
 
     public Interval(String name, int startIndex, int endIndex) {
         this.name = name;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
+    }
+
+    public Interval(String name) {
+        this.name = name;
     }
 
     @Override
@@ -40,5 +44,9 @@ public class Interval {
 
     public void setEndIndex(int endIndex) {
         this.endIndex = endIndex;
+    }
+
+    public int getLength() {
+        return endIndex - startIndex;
     }
 }

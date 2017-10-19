@@ -1,7 +1,7 @@
 chrom	chromStart	chromEnd
-Chromosome  5   20
-Chromosome  27   42
-Chromosome  47   62
-Chromosome  197   212
-Chromosome  219   234
-Chromosome  242   257
+Chromosome	5	20
+Chromosome	27	42
+Chromosome	47	62
+Chromosome	197	212
+Chromosome	219	234
+Chromosome	242	257
