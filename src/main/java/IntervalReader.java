@@ -4,19 +4,19 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class IntervalReader {
 
-    final String path;
+    private final String path;
 
     public IntervalReader(String path) {
         this.path = path;
     }
 
-    List<Interval> read() throws IOException {
-        List<Interval> intervals = new ArrayList<>();
+    public Queue<Interval> read() throws IOException {
+        Queue<Interval> intervals = new ArrayDeque<>();
 
         Reader in = new FileReader(path);
         Iterable<CSVRecord> records = CSVFormat.RFC4180
@@ -36,7 +36,7 @@ public class IntervalReader {
 
     public static void main(String[] args) throws IOException {
         String path = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
-        List<Interval> intervals = new IntervalReader(path).read();
+        Queue<Interval> intervals = new IntervalReader(path).read();
         for (Interval interval: intervals) {
             System.out.println(interval);
         }
