@@ -1,16 +1,16 @@
 import java.io.IOException;
-import java.util.List;
+import java.util.Queue;
 
 public class ProjectionTest {
 
-    static long countProjection(List<Interval> queryIntervals, List<Interval> referenceIntervals) {
+    static long countProjection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
         return queryIntervals.stream()
                 .map(x -> middleOfInterval(x))
                 .filter(x -> isPointInAnyIntervalOf(x, referenceIntervals))
                 .count();
     }
 
-    static boolean isPointInAnyIntervalOf(int point, List<Interval> intervals) {
+    static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
         return intervals.stream()
                 .filter(x -> isPointInInterval(point, x))
                 .count() != 0;
@@ -29,8 +29,8 @@ public class ProjectionTest {
         String ref = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_ref";
         String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_CpG";
 
-        List<Interval> referenceIntervals = new IntervalReader(ref).read();
-        List<Interval> queryIntervals = new IntervalReader(query).read();
+        Queue<Interval> referenceIntervals = new IntervalReader(ref).read();
+        Queue<Interval> queryIntervals = new IntervalReader(query).read();
 
         System.out.println(ProjectionTest.countProjection(queryIntervals, referenceIntervals));
     }
