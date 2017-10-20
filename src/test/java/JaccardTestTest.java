@@ -2,11 +2,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.List;
 import java.util.Queue;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertThat;
 
 public class JaccardTestTest {
 
@@ -59,29 +59,6 @@ public class JaccardTestTest {
         Queue<Interval> queryIntervals = new IntervalReader(query).read();
 
         assertThat(JaccardTest.compute(queryIntervals, referenceIntervals), is(0.643));
-    }
-
-
-    @Test
-    public void print() throws IOException {
-        String reference = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
-        String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/query.txt";
-
-        Queue<Interval> referenceIntervals = new IntervalReader(reference).read();
-        Queue<Interval> queryIntervals = new IntervalReader(query).read();
-
-        System.out.println("==== union ");
-
-        JaccardTest.tracksUnion(( queryIntervals),  referenceIntervals).stream()
-                .forEach(System.out::println);
-
-        System.out.println("==== intersection ");
-
-        queryIntervals.stream()
-                .map(interval -> JaccardTest.intervalAndTrackIntersection(interval, referenceIntervals))
-                .forEach(System.out::println);
-
-
     }
 
     @Test
