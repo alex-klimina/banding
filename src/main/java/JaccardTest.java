@@ -1,25 +1,33 @@
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JaccardTest {
 
     public static double compute(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         Integer intersection = getIntersectionValue(queryIntervals, referenceIntervals);
-
-        Integer union = tracksUnion(queryIntervals, referenceIntervals).stream()
-                .map(i -> i.getEndIndex() - i.getStartIndex())
-                .collect((Collectors.summingInt((Integer::valueOf))));
-
+        Integer union = getUnionValue(queryIntervals, referenceIntervals);
         return (double) intersection / (double) union;
-
     }
 
-    public static Integer getIntersectionValue(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
+    static Integer getUnionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
+        return tracksUnion(queryIntervals, referenceIntervals).stream()
+                    .map(Interval::getLength)
+                    .collect((Collectors.summingInt((Integer::valueOf))));
+    }
+
+    static Integer getIntersectionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
+        return trackIntersection(queryIntervals, referenceIntervals)
+                    .map(Interval::getLength)
+                    .collect((Collectors.summingInt((Integer::valueOf))));
+    }
+
+    public static Stream<Interval> trackIntersection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
         return queryIntervals.stream()
-                    .map(q -> intervalAndTrackIntersection(q, referenceIntervals))
-                    .collect(Collectors.summingInt(Integer::valueOf));
+                    .flatMap(q -> intervalAndTrackIntersection(q, referenceIntervals));
     }
 
     static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
@@ -66,23 +74,20 @@ public class JaccardTest {
         }
     }
 
-    static int intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
+    static Stream<Interval> intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
         return track.stream()
                 .map(t -> intervalIntersection(interval, t))
-                .collect(Collectors.summingInt(Integer::valueOf));
+                .filter(x -> x.getStartIndex()!=-1);
     }
 
-    static int intervalIntersection(Interval interval1, Interval interval2) {
+    static Interval intervalIntersection(Interval interval1, Interval interval2) {
         Interval intervalUnion = new Interval("intersection_" + interval1.getName() + "_" + interval2.getName());
-        if (isPointInInterval(interval2.getStartIndex(), interval1) ||
-                isPointInInterval(interval2.getEndIndex(), interval1) ||
-                isPointInInterval(interval1.getStartIndex(), interval2) ||
-                isPointInInterval(interval1.getEndIndex(), interval2)) {
+        if (areIntervalIntersected(interval1, interval2)) {
             intervalUnion.setStartIndex(Math.max(interval1.getStartIndex(), interval2.getStartIndex()));
             intervalUnion.setEndIndex(Math.min(interval1.getEndIndex(), interval2.getEndIndex()));
-            return intervalUnion.getLength();
+            return intervalUnion;
         } else {
-            return 0;
+            return new Interval(-1,-1);
         }
     }
 
@@ -110,4 +115,21 @@ public class JaccardTest {
         } else return false;
     }
 
+    public static void main(String[] args) throws IOException {
+        String ref = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_ref";
+        String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_CpG";
+
+        Deque<Interval> referenceIntervals = new IntervalReader(ref).read();
+        Deque<Interval> queryIntervals = new IntervalReader(query).read();
+
+        referenceIntervals = new ArrayDeque<>(referenceIntervals.stream()
+                .filter(x -> x.getName().equals("chr1"))
+                .collect(Collectors.toList()));
+
+        queryIntervals = new ArrayDeque<>(queryIntervals.stream()
+                .filter(x -> x.getName().equals("chr1"))
+                .collect(Collectors.toList()));
+
+        System.out.println(JaccardTest.compute(queryIntervals, referenceIntervals));
+    }
 }
