@@ -2,6 +2,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Queue;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -30,11 +31,11 @@ public class JaccardTestTest {
 
     @Test
     public void shouldComputeUnionOfIntervals() {
-        Queue<Interval> reference = new ArrayDeque<>();
+        Deque<Interval> reference = new ArrayDeque<>();
         reference.add(new Interval(5, 55));
         reference.add(new Interval(204, 255));
 
-        Queue<Interval> query = new ArrayDeque<>();
+        Deque<Interval> query = new ArrayDeque<>();
         query.add(new Interval(5, 20));
         query.add(new Interval(27, 42));
         query.add(new Interval(47, 62));
@@ -42,7 +43,7 @@ public class JaccardTestTest {
         query.add(new Interval(219, 234));
         query.add(new Interval(242, 257));
 
-        Queue<Interval> expectedTrack = new ArrayDeque<>();
+        Deque<Interval> expectedTrack = new ArrayDeque<>();
         expectedTrack.add(new Interval(5, 62));
         expectedTrack.add(new Interval(197, 257));
 
@@ -55,8 +56,8 @@ public class JaccardTestTest {
         String reference = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
         String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/query.txt";
 
-        Queue<Interval> referenceIntervals = new IntervalReader(reference).read();
-        Queue<Interval> queryIntervals = new IntervalReader(query).read();
+        Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
+        Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
         assertThat(JaccardTest.compute(queryIntervals, referenceIntervals), is(0.643));
     }

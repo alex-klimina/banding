@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class JaccardTest {
 
-    public static double compute(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
+    public static double compute(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         Integer intersection = getIntersectionValue(queryIntervals, referenceIntervals);
 
         Integer union = tracksUnion(queryIntervals, referenceIntervals).stream()
@@ -22,10 +22,7 @@ public class JaccardTest {
                     .collect(Collectors.summingInt(Integer::valueOf));
     }
 
-    static Deque<Interval> tracksUnion(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
-        ArrayDeque<Interval> queryDeque = new ArrayDeque<>(queryIntervals);
-        ArrayDeque<Interval> referenceDeque = new ArrayDeque<>(referenceIntervals);
-
+    static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
         Deque<Interval> unionTrack = new ArrayDeque<>();
 
         Interval currentInterval;

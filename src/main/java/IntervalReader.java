@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Queue;
 
 public class IntervalReader {
@@ -15,8 +16,8 @@ public class IntervalReader {
         this.path = path;
     }
 
-    public Queue<Interval> read() throws IOException {
-        Queue<Interval> intervals = new ArrayDeque<>();
+    public Deque<Interval> read() throws IOException {
+        Deque<Interval> intervals = new ArrayDeque<>();
 
         Reader in = new FileReader(path);
         Iterable<CSVRecord> records = CSVFormat.RFC4180
