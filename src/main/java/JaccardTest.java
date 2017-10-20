@@ -42,13 +42,7 @@ public class JaccardTest {
             } else {
                 currentInterval = referenceDeque.pollFirst();
             }
-            if (areIntervalIntersected(unionTrack.getLast(), currentInterval)) {
-                Interval lastFromUnionTrack = unionTrack.pollLast();
-                Interval intervalsUnion = intervalsUnion(lastFromUnionTrack, currentInterval);
-                unionTrack.addLast(intervalsUnion);
-            } else {
-                unionTrack.addLast(currentInterval);
-            }
+            unionTrackAndInterval(unionTrack, currentInterval);
         }
 
         Deque<Interval> tail;
@@ -60,15 +54,19 @@ public class JaccardTest {
 
         while ((!tail.isEmpty())) {
             currentInterval = tail.pollFirst();
-            if (areIntervalIntersected(unionTrack.getLast(), currentInterval)) {
-                Interval lastFromUnionTrack = unionTrack.pollLast();
-                Interval intervalsUnion = intervalsUnion(lastFromUnionTrack, currentInterval);
-                unionTrack.addLast(intervalsUnion);
-            } else {
-                unionTrack.addLast(currentInterval);
-            }
+            unionTrackAndInterval(unionTrack, currentInterval);
         }
         return unionTrack;
+    }
+
+    private static void unionTrackAndInterval(Deque<Interval> unionTrack, Interval interval) {
+        if (areIntervalIntersected(unionTrack.getLast(), interval)) {
+            Interval lastFromUnionTrack = unionTrack.pollLast();
+            Interval intervalsUnion = intervalsUnion(lastFromUnionTrack, interval);
+            unionTrack.addLast(intervalsUnion);
+        } else {
+            unionTrack.addLast(interval);
+        }
     }
 
     static int intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
