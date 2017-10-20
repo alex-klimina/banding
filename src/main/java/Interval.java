@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Interval {
     private String name;
     private int startIndex;
@@ -13,6 +15,11 @@ public class Interval {
         this.name = name;
     }
 
+    public Interval(int startIndex, int endIndex) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+    }
+
     @Override
     public String toString() {
         return "Interval{" +
@@ -20,6 +27,21 @@ public class Interval {
                 ", startIndex=" + startIndex +
                 ", endIndex=" + endIndex +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Interval interval = (Interval) o;
+        return startIndex == interval.startIndex &&
+                endIndex == interval.endIndex;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(startIndex, endIndex);
     }
 
     public String getName() {
