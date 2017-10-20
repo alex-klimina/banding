@@ -5,22 +5,20 @@ public class ProjectionTest {
 
     static long countProjection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
         return queryIntervals.stream()
-                .map(x -> middleOfInterval(x))
+                .map(ProjectionTest::middleOfInterval)
                 .filter(x -> isPointInAnyIntervalOf(x, referenceIntervals))
                 .count();
     }
 
-    static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
-        return intervals.stream()
-                .filter(x -> isPointInInterval(point, x))
-                .count() != 0;
+    private static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
+        return intervals.stream().anyMatch(x -> isPointInInterval(point, x));
     }
 
-    static boolean isPointInInterval(int point, Interval interval) {
+    private static boolean isPointInInterval(int point, Interval interval) {
         return ((interval.getStartIndex() <= point) && (point <= interval.getEndIndex()));
     }
 
-    static int middleOfInterval(Interval interval) {
+    private static int middleOfInterval(Interval interval) {
         return interval.getStartIndex() + (interval.getEndIndex() - interval.getStartIndex())/2;
     }
 
