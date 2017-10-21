@@ -92,7 +92,7 @@ public class JaccardTestTest {
         Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
         Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
-        assertThat(JaccardTest.compute(queryIntervals, referenceIntervals), is(0.643));
+        assertThat(JaccardTest.computeJaccardStatistic(queryIntervals, referenceIntervals), is(0.643));
     }
 
     @Test
