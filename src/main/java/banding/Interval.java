@@ -1,3 +1,5 @@
+package banding;
+
 import java.util.Objects;
 
 public class Interval {
@@ -22,7 +24,7 @@ public class Interval {
 
     @Override
     public String toString() {
-        return "Interval{" +
+        return "banding.Interval{" +
                 "name='" + name + '\'' +
                 ", startIndex=" + startIndex +
                 ", endIndex=" + endIndex +
