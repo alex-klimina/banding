@@ -1,12 +1,12 @@
 package banding.metric;
 
-import banding.Interval;
 import banding.IntervalReader;
+import banding.entity.Interval;
 
 import java.io.IOException;
 import java.util.Queue;
 
-import static banding.Track.isPointInAnyIntervalOf;
+import static banding.entity.Track.isPointInAnyIntervalOf;
 
 public class ProjectionTest {
 

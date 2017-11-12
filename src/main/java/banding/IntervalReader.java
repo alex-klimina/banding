@@ -1,5 +1,6 @@
 package banding;
 
+import banding.entity.Interval;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 

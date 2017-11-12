@@ -1,8 +1,8 @@
-package banding;
+package banding.entity;
 
 import java.util.Queue;
 
-import static banding.Interval.isPointInInterval;
+import static banding.entity.Interval.isPointInInterval;
 
 public class Track {
 

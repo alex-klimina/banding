@@ -1,4 +1,4 @@
-package banding;
+package banding.entity;
 
 import java.util.Objects;
 
