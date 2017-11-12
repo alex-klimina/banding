@@ -1,5 +1,7 @@
-package banding;
+package banding.metric;
 
+import banding.Interval;
+import banding.IntervalReader;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,7 +46,7 @@ public class JaccardTestTest {
         query.add(new Interval(242, 257));
 
         System.out.println("TrackUnion");
-        JaccardTest.tracksUnion(query, reference).stream()
+        JaccardTest.tracksUnion(query, reference)
                 .forEach(x -> System.out.println(x.getStartIndex() + "\t" + x.getEndIndex() + "\t" + x.getLength()));
 
         reference = new ArrayDeque<>();

@@ -1,6 +1,7 @@
 package banding;
 
 
+import banding.metric.JaccardTest;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

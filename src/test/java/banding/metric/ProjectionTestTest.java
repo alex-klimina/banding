@@ -1,5 +1,7 @@
-package banding;
+package banding.metric;
 
+import banding.Interval;
+import banding.IntervalReader;
 import org.junit.Test;
 
 import java.io.IOException;
