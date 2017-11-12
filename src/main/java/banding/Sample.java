@@ -75,12 +75,12 @@ public class Sample {
         dataset.show();
 
         rows = dataset.collectAsList();
-        intervalRef = new ArrayDeque<>(rows.stream()
+        Deque<Interval> intervalQuery = new ArrayDeque<>(rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
                 .collect(Collectors.toList()));
 
 
-        jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalCpG, intervalRef);
+        jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalQuery, intervalRef);
         System.out.println(jaccardStatistic);
 
     }
