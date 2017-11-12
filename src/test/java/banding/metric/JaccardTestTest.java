@@ -2,6 +2,7 @@ package banding.metric;
 
 import banding.IntervalReader;
 import banding.entity.Interval;
+import banding.entity.Track;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class JaccardTestTest {
         query.add(new Interval(242, 257));
 
         System.out.println("TrackUnion");
-        JaccardTest.tracksUnion(query, reference)
+        Track.tracksUnion(query, reference)
                 .forEach(x -> System.out.println(x.getStartIndex() + "\t" + x.getEndIndex() + "\t" + x.getLength()));
 
         reference = new ArrayDeque<>();
@@ -62,7 +63,7 @@ public class JaccardTestTest {
         query.add(new Interval(242, 257));
 
         System.out.println("TrackIntersection");
-        JaccardTest.trackIntersection(query, reference)
+        Track.trackIntersection(query, reference)
                 .forEach(x -> System.out.println(x.getStartIndex() + "\t" + x.getEndIndex() + "\t" + x.getLength()));
     }
 
@@ -84,7 +85,7 @@ public class JaccardTestTest {
         expectedTrack.add(new Interval(5, 62));
         expectedTrack.add(new Interval(197, 257));
 
-        assertArrayEquals(JaccardTest.tracksUnion(reference, query).toArray(), expectedTrack.toArray());
+        assertArrayEquals(Track.tracksUnion(reference, query).toArray(), expectedTrack.toArray());
 
     }
 

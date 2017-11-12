@@ -1,5 +1,6 @@
 package banding.entity;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.stream.Stream;
@@ -26,5 +27,44 @@ public class Track {
         } else {
             unionTrack.addLast(interval);
         }
+    }
+
+    public static Stream<Interval> trackIntersection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
+        return queryIntervals.stream()
+                    .flatMap(q -> intervalAndTrackIntersection(q, referenceIntervals));
+    }
+
+    public static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
+        Deque<Interval> unionTrack = new ArrayDeque<>();
+
+        Interval currentInterval;
+        if (queryDeque.getFirst().getStartIndex() <= referenceDeque.getFirst().getStartIndex()) {
+            currentInterval = queryDeque.pollFirst();
+        } else {
+            currentInterval = referenceDeque.pollFirst();
+        }
+        unionTrack.addLast(currentInterval);
+
+        while (!queryDeque.isEmpty() && !referenceDeque.isEmpty()) {
+            if (queryDeque.getFirst().getStartIndex() <= referenceDeque.getFirst().getStartIndex()) {
+                currentInterval = queryDeque.pollFirst();
+            } else {
+                currentInterval = referenceDeque.pollFirst();
+            }
+            unionTrackAndInterval(unionTrack, currentInterval);
+        }
+
+        Deque<Interval> tail;
+        if (!queryDeque.isEmpty()) {
+            tail = queryDeque;
+        } else {
+            tail = referenceDeque;
+        }
+
+        while ((!tail.isEmpty())) {
+            currentInterval = tail.pollFirst();
+            unionTrackAndInterval(unionTrack, currentInterval);
+        }
+        return unionTrack;
     }
 }
