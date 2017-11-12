@@ -103,11 +103,11 @@ public class JaccardTestTest {
     public void shouldReturnWhetherIntervalIntersectedOrNot() {
         Interval interval1 = new Interval("", 0, 5);
         Interval interval2 = new Interval("", 6, 10);
-        assertThat(JaccardTest.areIntervalIntersected(interval1, interval2), is(false));
+        assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(false));
 
         interval1 = new Interval("", 0, 8);
         interval2 = new Interval("", 5, 10);
-        assertThat(JaccardTest.areIntervalIntersected(interval1, interval2), is(true));
+        assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(true));
 
     }
 }

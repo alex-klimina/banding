@@ -30,6 +30,15 @@ public class Interval {
         this.endIndex = endIndex;
     }
 
+    public static boolean areIntervalsIntersected(Interval interval1, Interval interval2) {
+        if ((isPointInInterval(interval1.getStartIndex(), interval2) ||
+                isPointInInterval(interval1.getEndIndex(), interval2) ||
+                isPointInInterval(interval2.getStartIndex(), interval1) ||
+                isPointInInterval(interval2.getEndIndex(), interval1))) {
+            return true;
+        } else return false;
+    }
+
     @Override
     public String toString() {
         return "banding.Interval{" +

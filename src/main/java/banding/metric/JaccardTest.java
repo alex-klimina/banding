@@ -10,8 +10,6 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static banding.entity.Interval.isPointInInterval;
-
 public class JaccardTest {
 
     public static double computeJaccardStatistic(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
@@ -72,7 +70,7 @@ public class JaccardTest {
     }
 
     private static void unionTrackAndInterval(Deque<Interval> unionTrack, Interval interval) {
-        if (areIntervalIntersected(unionTrack.getLast(), interval)) {
+        if (Interval.areIntervalsIntersected(unionTrack.getLast(), interval)) {
             Interval lastFromUnionTrack = unionTrack.pollLast();
             Interval intervalsUnion = intervalsUnion(lastFromUnionTrack, interval);
             unionTrack.addLast(intervalsUnion);
@@ -89,7 +87,7 @@ public class JaccardTest {
 
     static Interval intervalIntersection(Interval interval1, Interval interval2) {
         Interval intervalUnion = new Interval("intersection_" + interval1.getName() + "_" + interval2.getName());
-        if (areIntervalIntersected(interval1, interval2)) {
+        if (Interval.areIntervalsIntersected(interval1, interval2)) {
             intervalUnion.setStartIndex(Math.max(interval1.getStartIndex(), interval2.getStartIndex()));
             intervalUnion.setEndIndex(Math.min(interval1.getEndIndex(), interval2.getEndIndex()));
             return intervalUnion;
@@ -99,7 +97,7 @@ public class JaccardTest {
     }
 
     static Interval intervalsUnion(Interval interval1, Interval interval2) {
-        if (areIntervalIntersected(interval1, interval2)) {
+        if (Interval.areIntervalsIntersected(interval1, interval2)) {
             Interval intervalUnion = new Interval("union_" + interval1.getName() + "_" + interval2.getName());
             intervalUnion.setStartIndex(Math.min(interval1.getStartIndex(), interval2.getStartIndex()));
             intervalUnion.setEndIndex(Math.max(interval1.getEndIndex(), interval2.getEndIndex()));
@@ -107,15 +105,6 @@ public class JaccardTest {
         } else {
             throw new RuntimeException("Intervals are not intersected.");
         }
-    }
-
-    static boolean areIntervalIntersected(Interval interval1, Interval interval2) {
-        if ((isPointInInterval(interval1.getStartIndex(), interval2) ||
-                isPointInInterval(interval1.getEndIndex(), interval2) ||
-                isPointInInterval(interval2.getStartIndex(), interval1) ||
-                isPointInInterval(interval2.getEndIndex(), interval1))) {
-            return true;
-        } else return false;
     }
 
     public static void main(String[] args) throws IOException {
