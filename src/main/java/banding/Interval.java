@@ -7,6 +7,14 @@ public class Interval {
     private int startIndex;
     private int endIndex;
 
+    public static int middleOfInterval(Interval interval) {
+        return interval.getStartIndex() + (interval.getEndIndex() - interval.getStartIndex())/2;
+    }
+
+    public static boolean isPointInInterval(int point, Interval interval) {
+        return ((interval.getStartIndex() <= point) && (point <= interval.getEndIndex()));
+    }
+
     public Interval(String name, int startIndex, int endIndex) {
         this.name = name;
         this.startIndex = startIndex;
