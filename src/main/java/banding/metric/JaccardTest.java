@@ -2,6 +2,7 @@ package banding.metric;
 
 import banding.IntervalReader;
 import banding.entity.Interval;
+import banding.entity.Track;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -32,7 +33,7 @@ public class JaccardTest {
 
     public static Stream<Interval> trackIntersection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
         return queryIntervals.stream()
-                    .flatMap(q -> intervalAndTrackIntersection(q, referenceIntervals));
+                    .flatMap(q -> Track.intervalAndTrackIntersection(q, referenceIntervals));
     }
 
     static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
@@ -52,7 +53,7 @@ public class JaccardTest {
             } else {
                 currentInterval = referenceDeque.pollFirst();
             }
-            unionTrackAndInterval(unionTrack, currentInterval);
+            Track.unionTrackAndInterval(unionTrack, currentInterval);
         }
 
         Deque<Interval> tail;
@@ -64,25 +65,9 @@ public class JaccardTest {
 
         while ((!tail.isEmpty())) {
             currentInterval = tail.pollFirst();
-            unionTrackAndInterval(unionTrack, currentInterval);
+            Track.unionTrackAndInterval(unionTrack, currentInterval);
         }
         return unionTrack;
-    }
-
-    private static void unionTrackAndInterval(Deque<Interval> unionTrack, Interval interval) {
-        if (Interval.areIntervalsIntersected(unionTrack.getLast(), interval)) {
-            Interval lastFromUnionTrack = unionTrack.pollLast();
-            Interval intervalsUnion = Interval.intervalsUnion(lastFromUnionTrack, interval);
-            unionTrack.addLast(intervalsUnion);
-        } else {
-            unionTrack.addLast(interval);
-        }
-    }
-
-    static Stream<Interval> intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
-        return track.stream()
-                .map(t -> Interval.intervalIntersection(interval, t))
-                .filter(x -> x.getStartIndex()!=-1);
     }
 
     public static void main(String[] args) throws IOException {
