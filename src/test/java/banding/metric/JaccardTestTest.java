@@ -1,7 +1,7 @@
 package banding.metric;
 
-import banding.Interval;
 import banding.IntervalReader;
+import banding.entity.Interval;
 import org.junit.Test;
 
 import java.io.IOException;
