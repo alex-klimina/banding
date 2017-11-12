@@ -10,6 +10,8 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static banding.entity.Interval.isPointInInterval;
+
 public class JaccardTest {
 
     public static double computeJaccardStatistic(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
@@ -105,10 +107,6 @@ public class JaccardTest {
         } else {
             throw new RuntimeException("Intervals are not intersected.");
         }
-    }
-
-    static boolean isPointInInterval(int point, Interval interval) {
-        return ((interval.getStartIndex() <= point) && (point <= interval.getEndIndex()));
     }
 
     static boolean areIntervalIntersected(Interval interval1, Interval interval2) {
