@@ -38,9 +38,9 @@ public class Sample {
                 .select("chrom", "chromStart", "chromEnd", "gieStain");
 
         List<Row> rows = dataset.collectAsList();
-        Deque<Interval> intervalRef = new ArrayDeque<>(rows.stream()
+        Deque<Interval> intervalRef = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toCollection(ArrayDeque::new));
 
         dataset = dataFrameReader
                 .load("src/main/resources/hgTables_ref.csv")
@@ -48,9 +48,9 @@ public class Sample {
                 .select("chrom", "chromStart", "chromEnd", "gieStain");
 
         rows = dataset.collectAsList();
-        Deque<Interval> intervalCpG = new ArrayDeque<>(rows.stream()
+        Deque<Interval> intervalCpG = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toCollection(ArrayDeque::new));
 
 
         double jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalCpG, intervalRef);
@@ -66,9 +66,9 @@ public class Sample {
         dataset.show();
 
         rows = dataset.collectAsList();
-        intervalRef = new ArrayDeque<>(rows.stream()
+        intervalRef = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toCollection(ArrayDeque::new));
 
         dataset = dataFrameReader
                 .load("src/test/resources/query.txt")
@@ -77,9 +77,9 @@ public class Sample {
         dataset.show();
 
         rows = dataset.collectAsList();
-        Deque<Interval> intervalQuery = new ArrayDeque<>(rows.stream()
+        Deque<Interval> intervalQuery = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toCollection(ArrayDeque::new));
 
 
         jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalQuery, intervalRef);
