@@ -72,7 +72,7 @@ public class JaccardTest {
     private static void unionTrackAndInterval(Deque<Interval> unionTrack, Interval interval) {
         if (Interval.areIntervalsIntersected(unionTrack.getLast(), interval)) {
             Interval lastFromUnionTrack = unionTrack.pollLast();
-            Interval intervalsUnion = intervalsUnion(lastFromUnionTrack, interval);
+            Interval intervalsUnion = Interval.intervalsUnion(lastFromUnionTrack, interval);
             unionTrack.addLast(intervalsUnion);
         } else {
             unionTrack.addLast(interval);
@@ -81,30 +81,8 @@ public class JaccardTest {
 
     static Stream<Interval> intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
         return track.stream()
-                .map(t -> intervalIntersection(interval, t))
+                .map(t -> Interval.intervalIntersection(interval, t))
                 .filter(x -> x.getStartIndex()!=-1);
-    }
-
-    static Interval intervalIntersection(Interval interval1, Interval interval2) {
-        Interval intervalUnion = new Interval("intersection_" + interval1.getName() + "_" + interval2.getName());
-        if (Interval.areIntervalsIntersected(interval1, interval2)) {
-            intervalUnion.setStartIndex(Math.max(interval1.getStartIndex(), interval2.getStartIndex()));
-            intervalUnion.setEndIndex(Math.min(interval1.getEndIndex(), interval2.getEndIndex()));
-            return intervalUnion;
-        } else {
-            return new Interval(-1,-1);
-        }
-    }
-
-    static Interval intervalsUnion(Interval interval1, Interval interval2) {
-        if (Interval.areIntervalsIntersected(interval1, interval2)) {
-            Interval intervalUnion = new Interval("union_" + interval1.getName() + "_" + interval2.getName());
-            intervalUnion.setStartIndex(Math.min(interval1.getStartIndex(), interval2.getStartIndex()));
-            intervalUnion.setEndIndex(Math.max(interval1.getEndIndex(), interval2.getEndIndex()));
-            return intervalUnion;
-        } else {
-            throw new RuntimeException("Intervals are not intersected.");
-        }
     }
 
     public static void main(String[] args) throws IOException {

@@ -39,6 +39,28 @@ public class Interval {
         } else return false;
     }
 
+    public static Interval intervalsUnion(Interval interval1, Interval interval2) {
+        if (areIntervalsIntersected(interval1, interval2)) {
+            Interval intervalUnion = new Interval("union_" + interval1.getName() + "_" + interval2.getName());
+            intervalUnion.setStartIndex(Math.min(interval1.getStartIndex(), interval2.getStartIndex()));
+            intervalUnion.setEndIndex(Math.max(interval1.getEndIndex(), interval2.getEndIndex()));
+            return intervalUnion;
+        } else {
+            throw new RuntimeException("Intervals are not intersected.");
+        }
+    }
+
+    public static Interval intervalIntersection(Interval interval1, Interval interval2) {
+        Interval intervalUnion = new Interval("intersection_" + interval1.getName() + "_" + interval2.getName());
+        if (areIntervalsIntersected(interval1, interval2)) {
+            intervalUnion.setStartIndex(Math.max(interval1.getStartIndex(), interval2.getStartIndex()));
+            intervalUnion.setEndIndex(Math.min(interval1.getEndIndex(), interval2.getEndIndex()));
+            return intervalUnion;
+        } else {
+            return new Interval(-1,-1);
+        }
+    }
+
     @Override
     public String toString() {
         return "banding.Interval{" +
