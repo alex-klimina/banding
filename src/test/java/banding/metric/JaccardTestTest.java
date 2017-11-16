@@ -10,6 +10,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 
@@ -97,7 +98,7 @@ public class JaccardTestTest {
         Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
         Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
-        assertThat(JaccardTest.computeJaccardStatistic(queryIntervals, referenceIntervals), is(0.643));
+        assertThat(JaccardTest.computeJaccardStatistic(queryIntervals, referenceIntervals), is(closeTo(0.632, 0.001)));
     }
 
     @Test
