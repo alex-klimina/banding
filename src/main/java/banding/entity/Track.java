@@ -20,6 +20,14 @@ public class Track {
         this.intervals = new ArrayDeque<>();
     }
 
+    public int getTrackStart() {
+        return intervals.getFirst().getStartIndex();
+    }
+
+    public int getTrackEnd() {
+        return intervals.getLast().getEndIndex();
+    }
+
     public static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
         return intervals.stream().anyMatch(x -> isPointInInterval(point, x));
     }
