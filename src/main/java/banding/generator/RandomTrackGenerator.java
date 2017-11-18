@@ -15,6 +15,10 @@ public class RandomTrackGenerator {
         return null;
     }
 
+    static Interval generateRandomInterval(Interval interval, Track track) {
+        return generateRandomInterval(interval, track.getTrackStart(), track.getTrackEnd());
+    }
+
     static Interval generateRandomInterval(Interval interval, int from, int to) {
         return generateRandomInterval(interval.getLength(), from, to);
     }
