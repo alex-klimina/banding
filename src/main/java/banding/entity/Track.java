@@ -2,12 +2,23 @@ package banding.entity;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.Queue;
 import java.util.stream.Stream;
 
 import static banding.entity.Interval.isPointInInterval;
 
 public class Track {
+
+    private Deque<Interval> intervals;
+
+    public Track(List<Interval> intervals) {
+        this.intervals = new ArrayDeque<>(intervals);
+    }
+
+    public Track() {
+        this.intervals = new ArrayDeque<>();
+    }
 
     public static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
         return intervals.stream().anyMatch(x -> isPointInInterval(point, x));
@@ -66,5 +77,9 @@ public class Track {
             unionTrackAndInterval(unionTrack, currentInterval);
         }
         return unionTrack;
+    }
+
+    public Deque<Interval> getIntervals() {
+        return intervals;
     }
 }
