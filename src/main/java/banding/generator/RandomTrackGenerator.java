@@ -52,7 +52,7 @@ public class RandomTrackGenerator {
             Interval randomInterval = null;
             while (intersection) {
                 randomInterval = generateRandomInterval(i.getLength(), 0, length);
-                intersection = Track.areIntervalAndTrackIntersect(randomInterval, track);
+                intersection = Track.areIntervalAndTrackIntersect(randomInterval, generatedTrack);
             }
             generatedTrack.addInterval(randomInterval);
         }
