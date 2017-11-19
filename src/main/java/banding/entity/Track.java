@@ -100,6 +100,7 @@ public class Track {
     }
 
     public Track addInterval(Interval interval) {
+        // TODO add sorting intervals (use not deque?)
         this.intervals.add(interval);
         return this;
     }
@@ -117,5 +118,12 @@ public class Track {
                 .filter(i -> i.getStartIndex() != -1 && interval.getEndIndex() != -1)
                 .count();
         return count != 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Track{" +
+                "intervals=" + intervals +
+                '}';
     }
 }
