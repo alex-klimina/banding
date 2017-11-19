@@ -95,6 +95,10 @@ public class Track {
         return intervals;
     }
 
+    public Track addInterval(int startInterval, int endInterval) {
+        return addInterval(new Interval(startInterval, endInterval));
+    }
+
     public Track addInterval(Interval interval) {
         this.intervals.add(interval);
         return this;
@@ -106,5 +110,12 @@ public class Track {
 
     public int getNumberOfIntervals() {
         return intervals.size();
+    }
+
+    public static boolean areIntervalAndTrackIntersect(Interval interval, Track track) {
+        long count = intervalAndTrackIntersection(interval, track.getIntervals())
+                .filter(i -> i.getStartIndex() != -1 && interval.getEndIndex() != -1)
+                .count();
+        return count != 0;
     }
 }
