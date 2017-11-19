@@ -68,5 +68,24 @@ public class RandomTrackGeneratorTest {
         assertThat(generatedTrackIntervalSet, is(queryTrackIntervalSet));
     }
 
+    @Test
+    public void shouldPrintGeneratedTrack() {
+        Track queryTrack = new Track();
+        queryTrack.addInterval(new Interval(5, 20));
+        queryTrack.addInterval(new Interval(27, 42));
+        queryTrack.addInterval(new Interval(47, 62));
+        queryTrack.addInterval(new Interval(197, 212));
+        queryTrack.addInterval(new Interval(219, 234));
+        queryTrack.addInterval(new Interval(242, 257));
+
+        Track referenceTrack = new Track();
+        referenceTrack.addInterval(new Interval(0, 300));
+
+        Track generatedTrack = generateRandomTrackLike(referenceTrack.getLength(), queryTrack);
+
+        System.out.println(generatedTrack);
+
+    }
+
 
 }
