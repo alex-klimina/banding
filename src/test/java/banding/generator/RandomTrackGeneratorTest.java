@@ -5,8 +5,11 @@ import banding.entity.Track;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static banding.generator.RandomTrackGenerator.generateRandomInterval;
+import static banding.generator.RandomTrackGenerator.generateRandomTrackLike;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
@@ -37,6 +40,32 @@ public class RandomTrackGeneratorTest {
         assertThat(randomInterval.getLength(), is(originInterval.getLength()));
         assertThat(randomInterval.getStartIndex(), greaterThanOrEqualTo(originTrack.getTrackStart()));
         assertThat(randomInterval.getEndIndex(), lessThanOrEqualTo(originTrack.getTrackEnd()));
+    }
+
+    @Test
+    public void shouldGenerateTrackWithPreassignedLengthByAnotherTrack() {
+        Track queryTrack = new Track();
+        queryTrack.addInterval(new Interval(5, 20));
+        queryTrack.addInterval(new Interval(27, 42));
+        queryTrack.addInterval(new Interval(47, 62));
+        queryTrack.addInterval(new Interval(197, 212));
+        queryTrack.addInterval(new Interval(219, 234));
+        queryTrack.addInterval(new Interval(242, 257));
+
+        Track referenceTrack = new Track();
+        referenceTrack.addInterval(new Interval(0, 300));
+
+        Track generatedTrack = generateRandomTrackLike(referenceTrack.getLength(), queryTrack);
+
+        assertThat(generatedTrack.getTrackEnd(), lessThanOrEqualTo(referenceTrack.getLength()));
+        assertThat(generatedTrack.getNumberOfIntervals(), is(queryTrack.getNumberOfIntervals()));
+        Set<Integer> generatedTrackIntervalSet = generatedTrack.getIntervals().stream()
+                .map(Interval::getLength)
+                .collect(Collectors.toSet());
+        Set<Integer> queryTrackIntervalSet = queryTrack.getIntervals().stream()
+                .map(Interval::getLength)
+                .collect(Collectors.toSet());
+        assertThat(generatedTrackIntervalSet, is(queryTrackIntervalSet));
     }
 
 
