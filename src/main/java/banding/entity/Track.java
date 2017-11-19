@@ -12,6 +12,10 @@ public class Track {
 
     private Deque<Interval> intervals;
 
+    public Track(Deque<Interval> intervals) {
+        this.intervals = intervals;
+    }
+
     public Track(List<Interval> intervals) {
         this.intervals = new ArrayDeque<>(intervals);
     }
@@ -89,5 +93,18 @@ public class Track {
 
     public Deque<Interval> getIntervals() {
         return intervals;
+    }
+
+    public Track addInterval(Interval interval) {
+        this.intervals.add(interval);
+        return this;
+    }
+
+    public int getLength() {
+        return getTrackEnd() - getTrackStart();
+    }
+
+    public int getNumberOfIntervals() {
+        return intervals.size();
     }
 }
