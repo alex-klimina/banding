@@ -43,4 +43,20 @@ public class RandomTrackGenerator {
         }
         return interval;
     }
+
+    static Track generateRandomTrackLike(int length, Track track) {
+        Track generatedTrack = new Track();
+
+        for (Interval i: track.getIntervals()) {
+            boolean intersection = true;
+            Interval randomInterval = null;
+            while (intersection) {
+                randomInterval = generateRandomInterval(i.getLength(), 0, length);
+                intersection = Track.areIntervalAndTrackIntersect(randomInterval, track);
+            }
+            generatedTrack.addInterval(randomInterval);
+        }
+
+        return generatedTrack;
+    }
 }
