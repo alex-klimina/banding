@@ -1,5 +1,8 @@
 package banding.entity;
 
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -8,8 +11,10 @@ import java.util.stream.Stream;
 
 import static banding.entity.Interval.isPointInInterval;
 
+@ToString
 public class Track {
 
+    @Getter
     private Deque<Interval> intervals;
 
     public Track(Deque<Interval> intervals) {
@@ -91,10 +96,6 @@ public class Track {
         return unionTrack;
     }
 
-    public Deque<Interval> getIntervals() {
-        return intervals;
-    }
-
     public Track addInterval(int startInterval, int endInterval) {
         return addInterval(new Interval(startInterval, endInterval));
     }
@@ -120,10 +121,4 @@ public class Track {
         return count != 0;
     }
 
-    @Override
-    public String toString() {
-        return "Track{" +
-                "intervals=" + intervals +
-                '}';
-    }
 }
