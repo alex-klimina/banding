@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static banding.entity.Interval.isPointInInterval;
@@ -119,6 +120,12 @@ public class Track {
                 .filter(i -> i.getStartIndex() != -1 && interval.getEndIndex() != -1)
                 .count();
         return count != 0;
+    }
+
+    public void sortIntervals() {
+        this.intervals = this.intervals.stream()
+                .sorted()
+                .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
 }

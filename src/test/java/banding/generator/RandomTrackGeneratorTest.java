@@ -85,6 +85,9 @@ public class RandomTrackGeneratorTest {
 
         System.out.println(generatedTrack);
 
+        generatedTrack.sortIntervals();
+        System.out.println(generatedTrack);
+
     }
 
 

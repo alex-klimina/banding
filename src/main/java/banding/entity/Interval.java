@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode (exclude = "name")
 @AllArgsConstructor
-public class Interval {
+public class Interval implements Comparable<Interval> {
     private String name;
     private int startIndex;
     private int endIndex;
@@ -65,6 +65,11 @@ public class Interval {
 
     public int getLength() {
         return endIndex - startIndex;
+    }
+
+    @Override
+    public int compareTo(Interval o) {
+        return this.getStartIndex() - o.getStartIndex();
     }
 }
 
