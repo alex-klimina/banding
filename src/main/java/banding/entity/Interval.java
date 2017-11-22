@@ -8,8 +8,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode (exclude = "name")
 @AllArgsConstructor
 public class Interval {
     private String name;
@@ -67,3 +67,5 @@ public class Interval {
         return endIndex - startIndex;
     }
 }
+
+
