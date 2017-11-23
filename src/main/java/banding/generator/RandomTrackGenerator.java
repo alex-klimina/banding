@@ -44,7 +44,7 @@ public class RandomTrackGenerator {
         return interval;
     }
 
-    static Track generateRandomTrackLike(int length, Track track) {
+    public static Track generateRandomTrackLike(int length, Track track) {
         Track generatedTrack = new Track();
 
         for (Interval i: track.getIntervals()) {
