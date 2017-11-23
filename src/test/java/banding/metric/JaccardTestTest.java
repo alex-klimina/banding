@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.closeTo;
@@ -111,5 +112,80 @@ public class JaccardTestTest {
         interval2 = new Interval("", 5, 10);
         assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(true));
 
+    }
+
+    @Test
+    public void shouldComputeUnionValueForChromosome() {
+        Track referenceChr1 = new Track();
+        referenceChr1.addInterval(new Interval(5, 55));
+        Track referenceChr2 = new Track();
+        referenceChr2.addInterval(new Interval(204, 255));
+        HashMap<String, Track> referenceMap = new HashMap<>();
+        referenceMap.put("Chr1", referenceChr1);
+        referenceMap.put("Chr2", referenceChr2);
+
+        Track queryChr1 = new Track();
+        queryChr1.addInterval(new Interval(5, 20));
+        queryChr1.addInterval(new Interval(27, 42));
+        queryChr1.addInterval(new Interval(47, 62));
+        Track queryChr2 = new Track();
+        queryChr2.addInterval(new Interval(197, 212));
+        queryChr2.addInterval(new Interval(219, 234));
+        queryChr2.addInterval(new Interval(242, 257));
+        HashMap<String, Track> queryMap = new HashMap<>();
+        queryMap.put("Chr1", queryChr1);
+        queryMap.put("Chr2", queryChr2);
+
+        assertThat(JaccardTest.getUnionValueForTrackSet(referenceMap, queryMap), is(117));
+    }
+
+    @Test
+    public void shouldComputeIntersectionValueForChromosome() {
+        Track referenceChr1 = new Track();
+        referenceChr1.addInterval(new Interval(5, 55));
+        Track referenceChr2 = new Track();
+        referenceChr2.addInterval(new Interval(204, 255));
+        HashMap<String, Track> referenceMap = new HashMap<>();
+        referenceMap.put("Chr1", referenceChr1);
+        referenceMap.put("Chr2", referenceChr2);
+
+        Track queryChr1 = new Track();
+        queryChr1.addInterval(new Interval(5, 20));
+        queryChr1.addInterval(new Interval(27, 42));
+        queryChr1.addInterval(new Interval(47, 62));
+        Track queryChr2 = new Track();
+        queryChr2.addInterval(new Interval(197, 212));
+        queryChr2.addInterval(new Interval(219, 234));
+        queryChr2.addInterval(new Interval(242, 257));
+        HashMap<String, Track> queryMap = new HashMap<>();
+        queryMap.put("Chr1", queryChr1);
+        queryMap.put("Chr2", queryChr2);
+
+        assertThat(JaccardTest.getIntersectionValueForTrackSet(referenceMap, queryMap), is(74));
+    }
+
+    @Test
+    public void shouldComputeJaccardMetricForChromosomes() {
+        Track referenceChr1 = new Track();
+        referenceChr1.addInterval(new Interval(5, 55));
+        Track referenceChr2 = new Track();
+        referenceChr2.addInterval(new Interval(204, 255));
+        HashMap<String, Track> referenceMap = new HashMap<>();
+        referenceMap.put("Chr1", referenceChr1);
+        referenceMap.put("Chr2", referenceChr2);
+
+        Track queryChr1 = new Track();
+        queryChr1.addInterval(new Interval(5, 20));
+        queryChr1.addInterval(new Interval(27, 42));
+        queryChr1.addInterval(new Interval(47, 62));
+        Track queryChr2 = new Track();
+        queryChr2.addInterval(new Interval(197, 212));
+        queryChr2.addInterval(new Interval(219, 234));
+        queryChr2.addInterval(new Interval(242, 257));
+        HashMap<String, Track> queryMap = new HashMap<>();
+        queryMap.put("Chr1", queryChr1);
+        queryMap.put("Chr2", queryChr2);
+
+        assertThat(JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap), is(closeTo(0.632, 0.001)));
     }
 }
