@@ -92,7 +92,7 @@ public class JaccardTestTest {
     }
 
     @Test
-    public void shouldJaccardTestReturn0643() throws IOException {
+    public void shouldComputeJaccardMetric() throws IOException {
         String reference = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
         String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/query.txt";
 
