@@ -98,7 +98,7 @@ public class JaccardTestTest {
         Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
         Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
-        assertThat(JaccardTest.computeJaccardStatistic(queryIntervals, referenceIntervals), is(closeTo(0.632, 0.001)));
+        assertThat(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals), is(closeTo(0.632, 0.001)));
     }
 
     @Test

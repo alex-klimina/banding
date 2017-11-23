@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class JaccardTest {
 
-    public static double computeJaccardStatistic(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
+    public static double computeJaccardStatisticForChromosome(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         Integer intersection = getIntersectionValue(queryIntervals, referenceIntervals);
         Integer union = getUnionValue(queryIntervals, referenceIntervals);
         return (double) intersection / (double) union;
@@ -44,6 +44,6 @@ public class JaccardTest {
                 .filter(x -> x.getName().equals("chr1"))
                 .collect(Collectors.toList()));
 
-        System.out.println(JaccardTest.computeJaccardStatistic(queryIntervals, referenceIntervals));
+        System.out.println(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals));
     }
 }

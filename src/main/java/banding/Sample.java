@@ -53,7 +53,7 @@ public class Sample {
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
 
-        double jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalCpG, intervalRef);
+        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(intervalCpG, intervalRef);
         System.out.println(jaccardStatistic);
 
 
@@ -82,7 +82,7 @@ public class Sample {
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
 
-        jaccardStatistic = JaccardTest.computeJaccardStatistic(intervalQuery, intervalRef);
+        jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(intervalQuery, intervalRef);
         System.out.println(jaccardStatistic);
 
     }
