@@ -42,10 +42,8 @@ public class Main {
     }
 
     private static Map<String, Track> readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
-        String chrName = "chr1";
         Dataset<Row> queryDataset = dataFrameReader
                 .load(path)
-                .filter(col("chrom").equalTo(chrName))
                 .select("chrom", "chromStart", "chromEnd");
 
         // TODO remove List<Row> rows and do map() by Spark API?
@@ -80,10 +78,8 @@ public class Main {
     }
 
     private static Map<String, Track> readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
-        String chrName = "chr1";
         Dataset<Row> referenceDataset = dataFrameReader
                 .load(path)
-                .filter(col("chrom").equalTo(chrName))
                 .filter(col("gieStain").equalTo("gpos100")
                         .or(col("gieStain").equalTo("gpos75")))
                 .select("chrom", "chromStart", "chromEnd", "gieStain");
