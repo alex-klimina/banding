@@ -7,7 +7,7 @@ import banding.entity.Track;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JaccardTest {
@@ -22,7 +22,7 @@ public class JaccardTest {
         return (double) intersection / (double) union;
     }
 
-    public static double computeJaccardStatisticForChromosomeSet(HashMap<String, Track> referenceMap, HashMap<String, Track> queryMap) {
+    public static double computeJaccardStatisticForChromosomeSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         Integer intersection = getIntersectionValueForTrackSet(referenceMap, queryMap);
         Integer union = getUnionValueForTrackSet(referenceMap, queryMap);
         return (double) intersection / (double) union;
@@ -40,7 +40,7 @@ public class JaccardTest {
                     .collect((Collectors.summingInt((Integer::valueOf))));
     }
 
-    static Integer getUnionValueForTrackSet(HashMap<String, Track> referenceMap, HashMap<String, Track> queryMap) {
+    static Integer getUnionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         return referenceMap.keySet().stream()
                 .map(name -> getUnionValue(queryMap.get(name), referenceMap.get(name)))
                 .mapToInt(Integer::valueOf)
@@ -59,7 +59,7 @@ public class JaccardTest {
                 .collect((Collectors.summingInt((Integer::valueOf))));
     }
 
-    static Integer getIntersectionValueForTrackSet(HashMap<String, Track> referenceMap, HashMap<String, Track> queryMap) {
+    static Integer getIntersectionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         return referenceMap.keySet().stream()
                 .map(name -> getIntersectionValue(queryMap.get(name), referenceMap.get(name)))
                 .mapToInt(Integer::valueOf)
