@@ -8,8 +8,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,23 +56,6 @@ public class Main {
                 .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
 
         return trackMap;
-    }
-
-    private static Track readQueryTrackFromFile(DataFrameReader dataFrameReader, String path) {
-        List<Row> rows;
-        String chrName = "chr1";
-        Dataset<Row> queryDataset = dataFrameReader
-                .load(path)
-                .filter(col("chrom").equalTo(chrName))
-                .select("chrom", "chromStart", "chromEnd");
-
-        // TODO remove List<Row> rows and do map() by Spark API?
-        rows = queryDataset.collectAsList();
-        Deque<Interval> intervalQuery = rows.stream()
-                .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
-                .collect(Collectors.toCollection(ArrayDeque::new));
-
-        return new Track(intervalQuery);
     }
 
     private static Map<String, Track> readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
