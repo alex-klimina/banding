@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.closeTo;
@@ -188,4 +189,20 @@ public class JaccardTestTest {
 
         assertThat(JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap), is(closeTo(0.632, 0.001)));
     }
+
+    @Test
+    public void unionAndIntersectionForIdenticalTrackShouldBeEqual() {
+        Deque<Interval> track = new ArrayDeque<>();
+        track.add(new Interval(5, 20));
+        track.add(new Interval(27, 42));
+        track.add(new Interval(47, 62));
+        track.add(new Interval(197, 212));
+        track.add(new Interval(219, 234));
+        track.add(new Interval(242, 257));
+
+        Deque<Interval> intersection = Track.trackIntersection(track, track).collect(Collectors.toCollection(ArrayDeque::new));
+        Deque<Interval> union = Track.tracksUnion(track, track);
+        assertArrayEquals(intersection.toArray(), union.toArray());
+    }
+
 }
