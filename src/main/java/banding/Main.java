@@ -33,18 +33,33 @@ public class Main {
                 .option("header", "true");
 
         String referencePath =  "src/main/resources/hgTables_ref.csv";
-        Map<String, Track> reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
+        Map<String, Track> referenceMap = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
         String queryPath = "src/main/resources/hgTables_CpG.csv";
-        Track query = readQueryTrackFromFile(dataFrameReader, queryPath);
-//        Track query = readReferenceTrackFromFile(dataFrameReader, referencePath);
+        Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(reference.getIntervals(), query.getIntervals());
+        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
         System.out.println(jaccardStatistic);
+    }
 
+    private static Map<String, Track> readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+        String chrName = "chr1";
+        Dataset<Row> queryDataset = dataFrameReader
+                .load(path)
+                .filter(col("chrom").equalTo(chrName))
+                .select("chrom", "chromStart", "chromEnd");
 
-        System.out.println(Track.trackIntersection(reference.getIntervals(), query.getIntervals()).count());
-        System.out.println(Track.tracksUnion(reference.getIntervals(), query.getIntervals()).size());
+        // TODO remove List<Row> rows and do map() by Spark API?
+        List<Row> rows = queryDataset.collectAsList();
+        Map<String, List<Interval>> map = rows.stream()
+                .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
+                .collect(Collectors.groupingBy(Interval::getName,
+                        Collectors.mapping(x -> new Interval(x.getStartIndex(), x.getEndIndex()), Collectors.toList())));
 
+        Map<String, Track> trackMap = new HashMap<>();
+        map.entrySet().stream()
+                .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
+
+        return trackMap;
     }
 
     private static Track readQueryTrackFromFile(DataFrameReader dataFrameReader, String path) {
