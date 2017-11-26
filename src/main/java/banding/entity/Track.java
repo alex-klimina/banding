@@ -64,30 +64,33 @@ public class Track {
     }
 
     public static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
+        Deque<Interval> queryDequeInternal = new ArrayDeque<>(queryDeque);
+        Deque<Interval> referenceDequeInternal = new ArrayDeque<>(referenceDeque);
+
         Deque<Interval> unionTrack = new ArrayDeque<>();
 
         Interval currentInterval;
-        if (queryDeque.getFirst().getStartIndex() <= referenceDeque.getFirst().getStartIndex()) {
-            currentInterval = queryDeque.pollFirst();
+        if (queryDequeInternal.getFirst().getStartIndex() <= referenceDequeInternal.getFirst().getStartIndex()) {
+            currentInterval = queryDequeInternal.pollFirst();
         } else {
-            currentInterval = referenceDeque.pollFirst();
+            currentInterval = referenceDequeInternal.pollFirst();
         }
         unionTrack.addLast(currentInterval);
 
-        while (!queryDeque.isEmpty() && !referenceDeque.isEmpty()) {
-            if (queryDeque.getFirst().getStartIndex() <= referenceDeque.getFirst().getStartIndex()) {
-                currentInterval = queryDeque.pollFirst();
+        while (!queryDequeInternal.isEmpty() && !referenceDequeInternal.isEmpty()) {
+            if (queryDequeInternal.getFirst().getStartIndex() <= referenceDequeInternal.getFirst().getStartIndex()) {
+                currentInterval = queryDequeInternal.pollFirst();
             } else {
-                currentInterval = referenceDeque.pollFirst();
+                currentInterval = referenceDequeInternal.pollFirst();
             }
             unionTrackAndInterval(unionTrack, currentInterval);
         }
 
         Deque<Interval> tail;
-        if (!queryDeque.isEmpty()) {
-            tail = queryDeque;
+        if (!queryDequeInternal.isEmpty()) {
+            tail = queryDequeInternal;
         } else {
-            tail = referenceDeque;
+            tail = referenceDequeInternal;
         }
 
         while ((!tail.isEmpty())) {
