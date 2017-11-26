@@ -43,9 +43,9 @@ public class Sample {
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
         dataset = dataFrameReader
-                .load("src/main/resources/hgTables_ref.csv")
+                .load("src/main/resources/hgTables_CpG.csv")
                 .filter(col("chrom").equalTo("chr1"))
-                .select("chrom", "chromStart", "chromEnd", "gieStain");
+                .select("chrom", "chromStart", "chromEnd");
 
         rows = dataset.collectAsList();
         Deque<Interval> intervalCpG = rows.stream()
@@ -54,7 +54,7 @@ public class Sample {
 
 
         double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(intervalCpG, intervalRef);
-        System.out.println(jaccardStatistic);
+        System.out.println("jaccardStatistic: " + jaccardStatistic);
 
 
         System.out.println("===== test ");
