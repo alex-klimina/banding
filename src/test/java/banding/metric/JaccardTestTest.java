@@ -207,13 +207,14 @@ public class JaccardTestTest {
 
     @Test
     public void jaccardMetricShouldBeEqual1ForIdenticalTrack() {
-        Deque<Interval> track = new ArrayDeque<>();
-        track.add(new Interval(5, 20));
-        track.add(new Interval(27, 42));
-        track.add(new Interval(47, 62));
-        track.add(new Interval(197, 212));
-        track.add(new Interval(219, 234));
-        track.add(new Interval(242, 257));
+        Deque<Interval> intervals = new ArrayDeque<>();
+        intervals.add(new Interval(5, 20));
+        intervals.add(new Interval(27, 42));
+        intervals.add(new Interval(47, 62));
+        intervals.add(new Interval(197, 212));
+        intervals.add(new Interval(219, 234));
+        intervals.add(new Interval(242, 257));
+        Track track = new Track(intervals);
 
         double expectedValue = 1;
         double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(track, track);
