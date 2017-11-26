@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 
 public class JaccardTest {
 
+    public static double computeJaccardStatisticForChromosome(Track query, Track reference) {
+        return computeJaccardStatisticForChromosome(query.getIntervals(), reference.getIntervals());
+    }
+
     public static double computeJaccardStatisticForChromosome(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         Integer intersection = getIntersectionValue(queryIntervals, referenceIntervals);
         Integer union = getUnionValue(queryIntervals, referenceIntervals);
