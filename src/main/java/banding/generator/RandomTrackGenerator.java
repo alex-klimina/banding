@@ -10,9 +10,9 @@ public class RandomTrackGenerator {
     public static Track generateRandomTrack(Track track, int length) {
         Track randomTrack = new Track();
         for (Interval interval: track.getIntervals()) {
-            generateRandomInterval(interval.getLength(), 0, length);
+            randomTrack.addInterval(generateRandomInterval(interval.getLength(), 0, length));
         }
-        return null;
+        return randomTrack;
     }
 
     static Interval generateRandomInterval(Interval interval, Track track) {
