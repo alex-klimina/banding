@@ -74,7 +74,7 @@ public class Main {
                         Collectors.mapping(x -> new Interval(x.getStartIndex(), x.getEndIndex()), Collectors.toList())));
 
         Map<String, Track> trackMap = new HashMap<>();
-        map.entrySet().stream()
+        map.entrySet()
                 .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
 
         return trackMap;
@@ -95,7 +95,7 @@ public class Main {
                         Collectors.mapping(x -> new Interval(x.getStartIndex(), x.getEndIndex()), Collectors.toList())));
 
         Map<String, Track> trackMap = new HashMap<>();
-        map.entrySet().stream()
+        map.entrySet()
                 .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
 
         return trackMap;
