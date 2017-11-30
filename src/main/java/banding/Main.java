@@ -8,11 +8,14 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static banding.generator.RandomTrackGenerator.generateRandomTrack;
 import static org.apache.spark.sql.functions.col;
 
 public class Main {
@@ -37,7 +40,26 @@ public class Main {
 
         double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
         System.out.println(jaccardStatistic);
+
+
+        int chr1End = 248956422;
+        Track chr1 = queryMap.get("chr1");
+        List<Double> stats = new ArrayList<>(1000);
+
+        for (int i = 0; i < 1000; i++) {
+            Track randomTrack = generateRandomTrack(chr1, chr1End);
+            jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(randomTrack, referenceMap.get("chr1"));
+            stats.add(jaccardStatistic);
+        }
+
+        System.out.println("jaccardStatistic for CpG: " + JaccardTest.computeJaccardStatisticForChromosome(queryMap.get("chr1"), referenceMap.get("chr1")));
+        System.out.println("jaccardStatistic for random tracks by CpG: \n");
+        DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
+//        System.out.println(stats);
+        System.out.println(summaryStatistics);
+
     }
+
 
     private static Map<String, Track> readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
         Dataset<Row> queryDataset = dataFrameReader
