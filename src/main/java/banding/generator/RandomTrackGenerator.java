@@ -7,15 +7,6 @@ import java.util.Random;
 
 public class RandomTrackGenerator {
 
-    public static Track generateRandomTrack(Track track, int length) {
-        Track randomTrack = new Track();
-        for (Interval interval: track.getIntervals()) {
-            randomTrack.addInterval(generateRandomInterval(interval.getLength(), 0, length));
-        }
-        // TODO check that intervals don't intersect
-        return randomTrack;
-    }
-
     public static Track generateRandomTrackLike(int length, Track track) {
         Track generatedTrack = new Track();
 
