@@ -10,7 +10,7 @@ import static banding.entity.Track.isPointInAnyIntervalOf;
 
 public class ProjectionTest {
 
-    static long countProjection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
+    public static long countProjection(Queue<Interval> queryIntervals, Queue<Interval> referenceIntervals) {
         return queryIntervals.stream()
                 .map(Interval::middleOfInterval)
                 .filter(x -> isPointInAnyIntervalOf(x, referenceIntervals))
