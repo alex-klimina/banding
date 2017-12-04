@@ -34,17 +34,17 @@ public class Main {
                 .option("inferSchema", "true")
                 .option("header", "true");
 
-        String referencePath =  "src/main/resources/hgTables_ref.csv";
+        String referencePath = "src/main/resources/hgTables_ref.csv";
         Map<String, Track> referenceMap = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        generateRandomTrackAndComputeStat(referenceMap, queryMap);
-        generateRandomChromosomeSetsAndComputeStat(referenceMap, queryMap);
+        generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
+        generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
 
     }
 
-    private static void generateRandomTrackAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         double jaccardStatistic;
         int chr1End = 248956422;
         Track chr1 = queryMap.get("chr1");
@@ -63,7 +63,7 @@ public class Main {
         System.out.println(summaryStatistics);
     }
 
-    private static void generateRandomChromosomeSetsAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    private static void generateRandomChromosomeSetsAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
 
         System.out.println("======");
         System.out.println("Whole genome");
