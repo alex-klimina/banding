@@ -39,10 +39,13 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
-        System.out.println(jaccardStatistic);
+        generateRandomTrackAndComputeStat(referenceMap, queryMap);
+        generateRandomChromosomeSetsAndComputeStat(referenceMap, queryMap);
 
+    }
 
+    private static void generateRandomTrackAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+        double jaccardStatistic;
         int chr1End = 248956422;
         Track chr1 = queryMap.get("chr1");
         int capacity = 100;
@@ -58,15 +61,9 @@ public class Main {
         System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
         DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
         System.out.println(summaryStatistics);
-
-
-        generateRandomChromosomeSetsAndComputeStat(referenceMap, queryMap, capacity);
-
-
-
     }
 
-    private static void generateRandomChromosomeSetsAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap, int capacity) {
+    private static void generateRandomChromosomeSetsAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
 
         System.out.println("======");
         System.out.println("Whole genome");
@@ -75,6 +72,7 @@ public class Main {
 
         List<Double> stats;
         DoubleSummaryStatistics summaryStatistics;
+        int capacity = 100;
         stats = new ArrayList<>(capacity);
 
         for (int i = 0; i < capacity; i++) {
