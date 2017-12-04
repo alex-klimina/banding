@@ -2,6 +2,7 @@ package banding;
 
 import banding.entity.Interval;
 import banding.entity.Track;
+import banding.generator.RandomTrackGenerator;
 import banding.metric.JaccardTest;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
@@ -23,7 +24,7 @@ public class Main {
     public static void main(String[] args) {
         SparkSession spark = SparkSession
                 .builder()
-                .master("local[1]")
+                .master("local[4]")
                 .appName("Banding")
                 .getOrCreate();
 
@@ -44,19 +45,37 @@ public class Main {
 
         int chr1End = 248956422;
         Track chr1 = queryMap.get("chr1");
-        List<Double> stats = new ArrayList<>(1000);
+        int capacity = 100;
+        List<Double> stats = new ArrayList<>(capacity);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < capacity; i++) {
             Track randomTrack = generateRandomTrackLike(chr1End, chr1);
             jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(randomTrack, referenceMap.get("chr1"));
             stats.add(jaccardStatistic);
         }
 
-        System.out.println("jaccardStatistic for CpG: " + JaccardTest.computeJaccardStatisticForChromosome(queryMap.get("chr1"), referenceMap.get("chr1")));
-        System.out.println("jaccardStatistic for random tracks by CpG: \n");
+        System.out.println("Chr1: jaccardStatistic for CpG: " + JaccardTest.computeJaccardStatisticForChromosome(queryMap.get("chr1"), referenceMap.get("chr1")));
+        System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
         DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-//        System.out.println(stats);
         System.out.println(summaryStatistics);
+
+        System.out.println("======");
+        System.out.println("Whole genome");
+        jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
+        System.out.println("jaccardStatistic for CpG: " + jaccardStatistic);
+
+        stats = new ArrayList<>(capacity);
+
+        for (int i = 0; i < capacity; i++) {
+            Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
+            jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, randomChomosomes);
+            stats.add(jaccardStatistic);
+        }
+        System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
+        summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
+        System.out.println(summaryStatistics);
+
+
 
     }
 
