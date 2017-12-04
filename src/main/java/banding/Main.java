@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static banding.generator.RandomTrackGenerator.generateRandomTrack;
+import static banding.generator.RandomTrackGenerator.generateRandomTrackLike;
 import static org.apache.spark.sql.functions.col;
 
 public class Main {
@@ -47,7 +47,7 @@ public class Main {
         List<Double> stats = new ArrayList<>(1000);
 
         for (int i = 0; i < 1000; i++) {
-            Track randomTrack = generateRandomTrack(chr1, chr1End);
+            Track randomTrack = generateRandomTrackLike(chr1End, chr1);
             jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(randomTrack, referenceMap.get("chr1"));
             stats.add(jaccardStatistic);
         }
