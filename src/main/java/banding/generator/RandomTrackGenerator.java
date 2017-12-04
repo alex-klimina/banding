@@ -3,9 +3,23 @@ package banding.generator;
 import banding.entity.Interval;
 import banding.entity.Track;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class RandomTrackGenerator {
+
+    public static Map<String, Track> generateChromosomeSetByReferenceLike(
+            Map<String, Track> reference,
+            Map<String, Track> query) {
+        Map<String, Track> generatedChromosomeSet = new HashMap<>();
+
+        for (Map.Entry<String, Track> entry: reference.entrySet()) {
+            Track randomTrack = generateRandomTrackByReferenceLike(reference.get(entry.getKey()), query.get(entry.getKey()));
+            generatedChromosomeSet.put(entry.getKey(), randomTrack);
+        }
+        return generatedChromosomeSet;
+    }
 
     public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
         int startReference = reference.getTrackStart();
