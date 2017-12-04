@@ -12,7 +12,24 @@ public class RandomTrackGenerator {
         for (Interval interval: track.getIntervals()) {
             randomTrack.addInterval(generateRandomInterval(interval.getLength(), 0, length));
         }
+        // TODO check that intervals don't intersect
         return randomTrack;
+    }
+
+    public static Track generateRandomTrackLike(int length, Track track) {
+        Track generatedTrack = new Track();
+
+        for (Interval i: track.getIntervals()) {
+            boolean intersection = true;
+            Interval randomInterval = null;
+            while (intersection) {
+                randomInterval = generateRandomInterval(i.getLength(), 0, length);
+                intersection = Track.areIntervalAndTrackIntersect(randomInterval, generatedTrack);
+            }
+            generatedTrack.addInterval(randomInterval);
+        }
+
+        return generatedTrack;
     }
 
     static Interval generateRandomInterval(Interval interval, Track track) {
@@ -42,21 +59,5 @@ public class RandomTrackGenerator {
             }
         }
         return interval;
-    }
-
-    public static Track generateRandomTrackLike(int length, Track track) {
-        Track generatedTrack = new Track();
-
-        for (Interval i: track.getIntervals()) {
-            boolean intersection = true;
-            Interval randomInterval = null;
-            while (intersection) {
-                randomInterval = generateRandomInterval(i.getLength(), 0, length);
-                intersection = Track.areIntervalAndTrackIntersect(randomInterval, generatedTrack);
-            }
-            generatedTrack.addInterval(randomInterval);
-        }
-
-        return generatedTrack;
     }
 }
