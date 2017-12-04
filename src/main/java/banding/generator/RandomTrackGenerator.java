@@ -7,6 +7,24 @@ import java.util.Random;
 
 public class RandomTrackGenerator {
 
+    public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
+        int startReference = reference.getTrackStart();
+        int endReference = reference.getTrackEnd();
+        Track generatedTrack = new Track();
+
+        for (Interval interval: query.getIntervals()) {
+            boolean intersection = true;
+            Interval randomInterval = null;
+            while (intersection) {
+                randomInterval = generateRandomInterval(interval.getLength(), startReference, endReference);
+                intersection = Track.areIntervalAndTrackIntersect(randomInterval, generatedTrack);
+            }
+            generatedTrack.addInterval(randomInterval);
+        }
+
+        return generatedTrack;
+    }
+
     public static Track generateRandomTrackLike(int length, Track track) {
         Track generatedTrack = new Track();
 
