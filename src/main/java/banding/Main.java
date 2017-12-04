@@ -59,11 +59,22 @@ public class Main {
         DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
         System.out.println(summaryStatistics);
 
+
+        generateRandomChromosomeSetsAndComputeStat(referenceMap, queryMap, capacity);
+
+
+
+    }
+
+    private static void generateRandomChromosomeSetsAndComputeStat(Map<String, Track> referenceMap, Map<String, Track> queryMap, int capacity) {
+
         System.out.println("======");
         System.out.println("Whole genome");
-        jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
+        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
         System.out.println("jaccardStatistic for CpG: " + jaccardStatistic);
 
+        List<Double> stats;
+        DoubleSummaryStatistics summaryStatistics;
         stats = new ArrayList<>(capacity);
 
         for (int i = 0; i < capacity; i++) {
@@ -74,9 +85,6 @@ public class Main {
         System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
         summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
         System.out.println(summaryStatistics);
-
-
-
     }
 
 
