@@ -20,7 +20,7 @@ public class ProjectionTestTest {
         Queue<Interval> referenceIntervals = new IntervalReader(reference).read();
         Queue<Interval> queryIntervals = new IntervalReader(query).read();
 
-        assertThat(ProjectionTest.countProjection(queryIntervals, referenceIntervals), is(6L));
+        assertThat(ProjectionTest.countProjection(referenceIntervals, queryIntervals), is(6L));
     }
 
 }
