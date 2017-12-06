@@ -131,4 +131,11 @@ public class Track {
                 .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
+    public long getCoverage() {
+        long coverage = 0;
+        for (Interval interval: intervals) {
+            coverage += interval.getLength();
+        }
+        return coverage;
+    }
 }
