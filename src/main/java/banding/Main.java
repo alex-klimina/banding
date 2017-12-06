@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static banding.generator.RandomTrackGenerator.generateRandomTrackLike;
 import static org.apache.spark.sql.functions.col;
@@ -71,18 +72,21 @@ public class Main {
         System.out.println(ProjectionTest.countProjection(referenceMap, queryMap));
 
         int capacity = numberOfExperiments;
-        List<Integer> stats = new ArrayList<>(capacity);
+        List<Integer> stats = IntStream.range(0, capacity).boxed()
+                .parallel()
+                .map(x -> getProjectionCountForRandomChromosome(referenceMap, queryMap))
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < capacity; i++) {
-            Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
-            int projectionCount = ProjectionTest.countProjection(referenceMap, randomChomosomes);
-            stats.add(projectionCount);
-        }
         System.out.println("projectionCount for random tracks by CpG: ");
         DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
         System.out.println(summaryStatistics);
         System.out.println("all values:");
         System.out.println(stats);
+    }
+
+    private static int getProjectionCountForRandomChromosome(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+        Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
+        return ProjectionTest.countProjection(referenceMap, randomChomosomes);
     }
 
     private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
