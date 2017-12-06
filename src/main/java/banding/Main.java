@@ -40,11 +40,27 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        computeCoverageAndGenomLength(referenceMap);
+
+
         int n = 10;
         generateRandomChromosomeSetsAndComputeProjectionTest(referenceMap, queryMap, n);
         generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
         generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
 
+    }
+
+    private static void computeCoverageAndGenomLength(Map<String, Track> referenceMap) {
+        long length = 0;
+        long coverage = 0;
+        for (Map.Entry<String, Track> entry: referenceMap.entrySet()) {
+            length += entry.getValue().getLength();
+            coverage += entry.getValue().getCoverage();
+        }
+        System.out.println("Coverage the reference: " + coverage);
+        System.out.println("Length the reference: " + length);
+        double p = (double) coverage / (double) length;
+        System.out.println("p for one mapped point: " + p);
     }
 
     private static void generateRandomChromosomeSetsAndComputeProjectionTest(Map<String, Track> referenceMap, Map<String, Track> queryMap, int numberOfExperiments) {
