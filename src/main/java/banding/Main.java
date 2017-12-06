@@ -4,6 +4,7 @@ import banding.entity.Interval;
 import banding.entity.Track;
 import banding.generator.RandomTrackGenerator;
 import banding.metric.JaccardTest;
+import banding.metric.ProjectionTest;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -39,9 +40,33 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        int n = 10;
+        generateRandomChromosomeSetsAndComputeProjectionTest(referenceMap, queryMap, n);
         generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
         generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
 
+    }
+
+    private static void generateRandomChromosomeSetsAndComputeProjectionTest(Map<String, Track> referenceMap, Map<String, Track> queryMap, int numberOfExperiments) {
+
+        System.out.println("======");
+        System.out.println("Whole genome");
+        System.out.println("projectionCount for CpG:");
+        System.out.println(ProjectionTest.countProjection(referenceMap, queryMap));
+
+        int capacity = numberOfExperiments;
+        List<Integer> stats = new ArrayList<>(capacity);
+
+        for (int i = 0; i < capacity; i++) {
+            Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
+            int projectionCount = ProjectionTest.countProjection(referenceMap, randomChomosomes);
+            stats.add(projectionCount);
+        }
+        System.out.println("projectionCount for random tracks by CpG: ");
+        DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
+        System.out.println(summaryStatistics);
+        System.out.println("all values:");
+        System.out.println(stats);
     }
 
     private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
