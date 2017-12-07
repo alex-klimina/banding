@@ -76,7 +76,7 @@ public class RandomTrackGenerator {
         Random random = new Random();
         Interval interval = null;
         while (interval == null) {
-            int start = random.nextInt(to);
+            int start = from + random.nextInt(to);
             if ((start + length) <= to) {
                 interval = new Interval(start, start + length);
             }
