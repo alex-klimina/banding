@@ -85,8 +85,8 @@ public class Main {
     }
 
     private static int getProjectionCountForRandomChromosome(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
-        Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
-        return ProjectionTest.countProjection(referenceMap, randomChomosomes);
+        Map<String, Track> randomChromosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
+        return ProjectionTest.countProjection(referenceMap, randomChromosomes);
     }
 
     private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
