@@ -16,4 +16,8 @@ public class Chromosome {
         return end - start + 1;
     }
 
+    public long getCoverage() {
+        return track.getCoverage();
+    }
+
 }

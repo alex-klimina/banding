@@ -69,12 +69,12 @@ public class Main {
         System.out.println("Expected average: " + p * queryMap.get("chr1").getNumberOfIntervals());
     }
 
-    private static void computeCoverageAndGenomLength(Map<String, Track> referenceMap) {
+    private static void computeCoverageAndGenomLength(Genome reference) {
         long length = 0;
         long coverage = 0;
-        for (Map.Entry<String, Track> entry: referenceMap.entrySet()) {
-            length += entry.getValue().getLength();
-            coverage += entry.getValue().getCoverage();
+        for (Chromosome c: reference.getChromosomes()) {
+            length += c.getLength();
+            coverage += c.getCoverage();
         }
         System.out.println("Coverage the reference: " + coverage);
         System.out.println("Length the reference: " + length);
