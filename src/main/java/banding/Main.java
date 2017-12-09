@@ -39,12 +39,10 @@ public class Main {
                 .option("header", "true");
 
         String referencePath = "src/main/resources/hgTables_ref.csv";
-        // TODO read to Genom
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
 
         String queryPath = "src/main/resources/hgTables_CpG.csv";
-        // TODO read to Genom
-        Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
+        Genome queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         //TODO work with Genom
         computeCoverageAndGenomLength(reference);
@@ -61,11 +59,12 @@ public class Main {
 
     }
 
-    private static void printExpectedDistributionParameters(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    private static void printExpectedDistributionParameters(Genome reference, Map<String, Track> queryMap) {
         System.out.println("Expected distribution: ");
-        double p = ((double) referenceMap.get("chr1").getCoverage() -1) /( (double) referenceMap.get("chr1").getLength() - 1);
+        double p = ((double) reference.getChromosome("chr1").getCoverage() -1)
+                / ( (double) reference.getChromosome("chr1").getLength() - 1);
         System.out.println("p = coverage / length = "
-                + referenceMap.get("chr1").getCoverage() + " / " + referenceMap.get("chr1").getLength() + " = " + p);
+                + reference.getChromosome("chr1").getCoverage() + " / " + reference.getChromosome("chr1").getLength() + " = " + p);
         System.out.println("Expected average: " + p * queryMap.get("chr1").getNumberOfIntervals());
     }
 
@@ -149,13 +148,24 @@ public class Main {
     }
 
 
-    private static Map<String, Track> readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+    private static Genome readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+
+        Dataset<Row> referenceDatasetStartEnd = dataFrameReader
+                .load(path)
+                .select("chrom", "chromStart", "chromEnd");
+        List<Row> rows = referenceDatasetStartEnd.collectAsList();
+        Map<String, List<PairStartEnd>> mapStartEnd = rows.stream()
+                .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
+                .collect(Collectors.groupingBy(Interval::getName,
+                        Collectors.mapping(x -> new PairStartEnd(x.getStartIndex(), x.getEndIndex()), Collectors.toList())));
+
+
         Dataset<Row> queryDataset = dataFrameReader
                 .load(path)
                 .select("chrom", "chromStart", "chromEnd");
 
         // TODO remove List<Row> rows and do map() by Spark API?
-        List<Row> rows = queryDataset.collectAsList();
+        rows = queryDataset.collectAsList();
         Map<String, List<Interval>> map = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
                 .collect(Collectors.groupingBy(Interval::getName,
@@ -165,7 +175,14 @@ public class Main {
         map.entrySet()
                 .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
 
-        return trackMap;
+        ArrayList<Chromosome> chromosomes = new ArrayList<>();
+        trackMap.entrySet()
+                .forEach(x -> chromosomes.add(
+                        new Chromosome(x.getKey(),
+                                x.getValue(),
+                                mapStartEnd.get(x.getKey()).get(0).start,
+                                mapStartEnd.get(x.getKey()).get(mapStartEnd.get(x.getKey()).size() - 1).end)));
+        return new Genome(chromosomes);
     }
 
     private static Genome readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
