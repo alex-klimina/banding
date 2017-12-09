@@ -111,7 +111,7 @@ public class Track {
     }
 
     public int getLength() {
-        return getTrackEnd() - getTrackStart();
+        return getTrackEnd() - getTrackStart() + 1;
     }
 
     public int getNumberOfIntervals() {

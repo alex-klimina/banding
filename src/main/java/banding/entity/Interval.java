@@ -64,7 +64,7 @@ public class Interval implements Comparable<Interval> {
     }
 
     public int getLength() {
-        return endIndex - startIndex;
+        return endIndex - startIndex + 1;
     }
 
     @Override
