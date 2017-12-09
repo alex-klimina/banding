@@ -1,5 +1,7 @@
 package banding;
 
+import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
 import banding.generator.RandomTrackGenerator;
@@ -38,24 +40,24 @@ public class Main {
 
         String referencePath = "src/main/resources/hgTables_ref.csv";
         // TODO read to Genom
-        Map<String, Track> referenceMap = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
+        Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
 
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         // TODO read to Genom
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         //TODO work with Genom
-        computeCoverageAndGenomLength(referenceMap);
+        computeCoverageAndGenomLength(reference);
 
-        printExpectedDistributionParameters(referenceMap, queryMap);
+        printExpectedDistributionParameters(reference, queryMap);
 
 
         int n = 10;
 
         //TODO work with Genom
-        generateRandomChromosomeSetsAndComputeProjectionTest(referenceMap, queryMap, n);
-        generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
-        generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
+        generateRandomChromosomeSetsAndComputeProjectionTest(reference, queryMap, n);
+        generateRandomTrackAndComputeJaccardStatistic(reference, queryMap);
+        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, queryMap);
 
     }
 
@@ -166,7 +168,16 @@ public class Main {
         return trackMap;
     }
 
-    private static Map<String, Track> readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+    private static Genome readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+        Dataset<Row> referenceDatasetStartEnd = dataFrameReader
+                .load(path)
+                .select("chrom", "chromStart", "chromEnd");
+        List<Row> rows = referenceDatasetStartEnd.collectAsList();
+        Map<String, List<PairStartEnd>> mapStartEnd = rows.stream()
+                .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
+                .collect(Collectors.groupingBy(Interval::getName,
+                        Collectors.mapping(x -> new PairStartEnd(x.getStartIndex(), x.getEndIndex()), Collectors.toList())));
+
         Dataset<Row> referenceDataset = dataFrameReader
                 .load(path)
                 .filter(col("gieStain").equalTo("gpos100")
@@ -174,7 +185,7 @@ public class Main {
                 .select("chrom", "chromStart", "chromEnd", "gieStain");
 
         // TODO remove List<Row> rows and do map() by Spark API?
-        List<Row> rows = referenceDataset.collectAsList();
+        rows = referenceDataset.collectAsList();
         Map<String, List<Interval>> map = rows.stream()
                 .map(r -> new Interval(r.getString(0), r.getInt(1), r.getInt(2)))
                 .collect(Collectors.groupingBy(Interval::getName,
@@ -184,7 +195,24 @@ public class Main {
         map.entrySet()
                 .forEach(entry -> trackMap.put(entry.getKey(), new Track(entry.getValue())));
 
-        return trackMap;
+        ArrayList<Chromosome> chromosomes = new ArrayList<>();
+        trackMap.entrySet()
+                .forEach(x -> chromosomes.add(
+                        new Chromosome(x.getKey(),
+                                x.getValue(),
+                                mapStartEnd.get(x.getKey()).get(0).start,
+                                mapStartEnd.get(x.getKey()).get(mapStartEnd.get(x.getKey()).size() - 1).end)));
+        return new Genome(chromosomes);
+    }
+
+    private static class PairStartEnd {
+        int start;
+        int end;
+
+        public PairStartEnd(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
     }
 
 }
