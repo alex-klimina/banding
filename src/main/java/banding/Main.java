@@ -59,13 +59,13 @@ public class Main {
 
     }
 
-    private static void printExpectedDistributionParameters(Genome reference, Map<String, Track> queryMap) {
+    private static void printExpectedDistributionParameters(Genome reference, Genome query) {
         System.out.println("Expected distribution: ");
         double p = ((double) reference.getChromosome("chr1").getCoverage() -1)
                 / ( (double) reference.getChromosome("chr1").getLength() - 1);
         System.out.println("p = coverage / length = "
                 + reference.getChromosome("chr1").getCoverage() + " / " + reference.getChromosome("chr1").getLength() + " = " + p);
-        System.out.println("Expected average: " + p * queryMap.get("chr1").getNumberOfIntervals());
+        System.out.println("Expected average: " + p * query.getChromosome("chr1").getNumberOfIntervals());
     }
 
     private static void computeCoverageAndGenomLength(Genome reference) {

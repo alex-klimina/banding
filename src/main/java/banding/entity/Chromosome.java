@@ -20,4 +20,7 @@ public class Chromosome {
         return track.getCoverage();
     }
 
+    public int getNumberOfIntervals() {
+        return track.getNumberOfIntervals();
+    }
 }
