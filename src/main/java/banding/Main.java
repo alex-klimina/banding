@@ -52,18 +52,34 @@ public class Main {
 
         //TODO work with Genom
         generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
-        generateRandomTrackAndComputeJaccardStatistic(reference, query);
-        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
+//        generateRandomTrackAndComputeJaccardStatistic(reference, query);
+//        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
 
     }
 
     private static void printExpectedDistributionParameters(Genome reference, Genome query) {
         System.out.println("Expected distribution: ");
-        double p = ((double) reference.getChromosome("chr1").getCoverage() -1)
-                / ( (double) reference.getChromosome("chr1").getLength() - 1);
-        System.out.println("p = coverage / length = "
-                + reference.getChromosome("chr1").getCoverage() + " / " + reference.getChromosome("chr1").getLength() + " = " + p);
-        System.out.println("Expected average: " + p * query.getChromosome("chr1").getNumberOfIntervals());
+
+        long coverage = 0;
+        long length = 0;
+
+        for (Chromosome c: reference.getChromosomes()) {
+            coverage += c.getCoverage();
+            length += c.getLength();
+        }
+        System.out.println("coverage = " + coverage);
+        System.out.println("length = " + length);
+
+
+        double p = ((double) coverage) / ( (double) length);
+        System.out.println("p = coverage / length = " + p);
+
+        int numberOfIntervals = 0;
+        for (Chromosome c: reference.getChromosomes()) {
+            numberOfIntervals += query.getChromosome(c.getName()).getNumberOfIntervals();
+        }
+
+        System.out.println("Expected average: " + p * numberOfIntervals);
     }
 
     private static void computeCoverageAndGenomLength(Genome reference) {
