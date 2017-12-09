@@ -37,15 +37,22 @@ public class Main {
                 .option("header", "true");
 
         String referencePath = "src/main/resources/hgTables_ref.csv";
+        // TODO read to Genom
         Map<String, Track> referenceMap = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
+
         String queryPath = "src/main/resources/hgTables_CpG.csv";
+        // TODO read to Genom
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        //TODO work with Genom
         computeCoverageAndGenomLength(referenceMap);
+
         printExpectedDistributionParameters(referenceMap, queryMap);
 
 
         int n = 10;
+
+        //TODO work with Genom
         generateRandomChromosomeSetsAndComputeProjectionTest(referenceMap, queryMap, n);
         generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
         generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
