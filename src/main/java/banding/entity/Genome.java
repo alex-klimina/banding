@@ -12,6 +12,6 @@ public class Genome {
     private List<Chromosome> chromosomes;
 
     public Chromosome getChromosome(String name) {
-        return chromosomes.stream().filter(x -> x.getName() == name).collect(Collectors.toList()).get(0);
+        return chromosomes.stream().filter(x -> x.getName().equals(name)).collect(Collectors.toList()).get(0);
     }
 }
