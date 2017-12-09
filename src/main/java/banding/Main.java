@@ -42,6 +42,7 @@ public class Main {
         Map<String, Track> queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         computeCoverageAndGenomLength(referenceMap);
+        printExpectedDistributionParameters(referenceMap, queryMap);
 
 
         int n = 10;
@@ -49,6 +50,14 @@ public class Main {
         generateRandomTrackAndComputeJaccardStatistic(referenceMap, queryMap);
         generateRandomChromosomeSetsAndComputeJaccardStatistic(referenceMap, queryMap);
 
+    }
+
+    private static void printExpectedDistributionParameters(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+        System.out.println("Expected distribution: ");
+        double p = ((double) referenceMap.get("chr1").getCoverage() -1) /( (double) referenceMap.get("chr1").getLength() - 1);
+        System.out.println("p = coverage / length = "
+                + referenceMap.get("chr1").getCoverage() + " / " + referenceMap.get("chr1").getLength() + " = " + p);
+        System.out.println("Expected average: " + p * queryMap.get("chr1").getNumberOfIntervals());
     }
 
     private static void computeCoverageAndGenomLength(Map<String, Track> referenceMap) {
