@@ -1,6 +1,8 @@
 package banding.metric;
 
 import banding.IntervalReader;
+import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
 
@@ -11,6 +13,16 @@ import java.util.Queue;
 import static banding.entity.Track.isPointInAnyIntervalOf;
 
 public class ProjectionTest {
+
+
+    public static int countProjection(Genome reference, Genome query) {
+        int projectionCount = 0;
+
+        for (Chromosome chromosome: reference.getChromosomes()) {
+            projectionCount += countProjection(chromosome.getTrack(), query.getChromosome(chromosome.getName()).getTrack());
+        }
+        return projectionCount;
+    }
 
     public static int countProjection(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         int projectionCount = 0;

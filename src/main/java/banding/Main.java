@@ -42,20 +42,18 @@ public class Main {
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
 
         String queryPath = "src/main/resources/hgTables_CpG.csv";
-        Genome queryMap = readQueryTrackMapFromFile(dataFrameReader, queryPath);
+        Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        //TODO work with Genom
         computeCoverageAndGenomLength(reference);
-
-        printExpectedDistributionParameters(reference, queryMap);
+        printExpectedDistributionParameters(reference, query);
 
 
         int n = 10;
 
         //TODO work with Genom
-        generateRandomChromosomeSetsAndComputeProjectionTest(reference, queryMap, n);
-        generateRandomTrackAndComputeJaccardStatistic(reference, queryMap);
-        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, queryMap);
+        generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
+        generateRandomTrackAndComputeJaccardStatistic(reference, query);
+        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
 
     }
 
@@ -81,7 +79,7 @@ public class Main {
         System.out.println("p for one mapped point: " + p);
     }
 
-    private static void generateRandomChromosomeSetsAndComputeProjectionTest(Map<String, Track> referenceMap, Map<String, Track> queryMap, int numberOfExperiments) {
+    private static void generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
         System.out.println("======");
         System.out.println("Whole genome");
@@ -101,7 +99,15 @@ public class Main {
         System.out.println(stats);
     }
 
-    private static int getProjectionCountForRandomChromosome(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    private static int getProjectionCountForRandomChromosome(Genome reference, Genome query) {
+        Map<String, Track> referenceMap = new HashMap<>();
+        reference.getChromosomes().stream()
+                .forEach(x -> referenceMap.put(x.getName(), x.getTrack()));
+
+        Map<String, Track> queryMap = new HashMap<>();
+        query.getChromosomes().stream()
+                .forEach(x -> queryMap.put(x.getName(), x.getTrack()));
+
         Map<String, Track> randomChromosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
         return ProjectionTest.countProjection(referenceMap, randomChromosomes);
     }
