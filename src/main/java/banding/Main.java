@@ -246,10 +246,10 @@ public class Main {
     }
 
     private static class PairStartEnd {
-        int start;
-        int end;
+        long start;
+        long end;
 
-        public PairStartEnd(int start, int end) {
+        public PairStartEnd(long start, long end) {
             this.start = start;
             this.end = end;
         }
