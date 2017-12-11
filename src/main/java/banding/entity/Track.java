@@ -30,11 +30,11 @@ public class Track {
         this.intervals = new ArrayDeque<>();
     }
 
-    public int getTrackStart() {
+    public long getTrackStart() {
         return intervals.getFirst().getStartIndex();
     }
 
-    public int getTrackEnd() {
+    public long getTrackEnd() {
         return intervals.getLast().getEndIndex();
     }
 
@@ -110,7 +110,7 @@ public class Track {
         return this;
     }
 
-    public int getLength() {
+    public long getLength() {
         return getTrackEnd() - getTrackStart() + 1;
     }
 
