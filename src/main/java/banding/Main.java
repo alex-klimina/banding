@@ -79,6 +79,7 @@ public class Main {
             numberOfIntervals += query.getChromosome(c.getName()).getNumberOfIntervals();
         }
 
+        System.out.println("Number of intervals: " + numberOfIntervals);
         System.out.println("Expected average: " + p * numberOfIntervals);
     }
 
@@ -124,8 +125,8 @@ public class Main {
         query.getChromosomes().stream()
                 .forEach(x -> queryMap.put(x.getName(), x.getTrack()));
 
-        Map<String, Track> randomChromosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
-        return ProjectionTest.countProjection(referenceMap, randomChromosomes);
+        Genome randomGenome = RandomTrackGenerator.generateGenomeByReferenceLike(reference, query);
+        return ProjectionTest.countProjection(reference, randomGenome);
     }
 
     private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
