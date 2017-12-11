@@ -39,8 +39,8 @@ public class RandomTrackGenerator {
     }
 
     public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
-        int startReference = reference.getTrackStart();
-        int endReference = reference.getTrackEnd();
+        long startReference = reference.getTrackStart();
+        long endReference = reference.getTrackEnd();
         return generateRandomTrackByReferenceLike(reference, query, startReference, endReference);
     }
 
@@ -81,7 +81,7 @@ public class RandomTrackGenerator {
         return generateRandomInterval(interval, track.getTrackStart(), track.getTrackEnd());
     }
 
-    static Interval generateRandomInterval(Interval interval, int from, int to) {
+    static Interval generateRandomInterval(Interval interval, long from, long to) {
         return generateRandomInterval(interval.getLength(), from, to);
     }
 
