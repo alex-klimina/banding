@@ -24,13 +24,18 @@ public class RandomTrackGenerator {
     public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
         int startReference = reference.getTrackStart();
         int endReference = reference.getTrackEnd();
+        return generateRandomTrackByReferenceLike(reference, query, startReference, endReference);
+    }
+
+    public static Track generateRandomTrackByReferenceLike(Track reference, Track query, int from, int to) {
+
         Track generatedTrack = new Track();
 
         for (Interval interval: query.getIntervals()) {
             boolean intersection = true;
             Interval randomInterval = null;
             while (intersection) {
-                randomInterval = generateRandomInterval(interval.getLength(), startReference, endReference);
+                randomInterval = generateRandomInterval(interval.getLength(), from, to);
                 intersection = Track.areIntervalAndTrackIntersect(randomInterval, generatedTrack);
             }
             generatedTrack.addInterval(randomInterval);
