@@ -38,7 +38,7 @@ public class Track {
         return intervals.getLast().getEndIndex();
     }
 
-    public static boolean isPointInAnyIntervalOf(int point, Queue<Interval> intervals) {
+    public static boolean isPointInAnyIntervalOf(long point, Queue<Interval> intervals) {
         return intervals.stream().anyMatch(x -> isPointInInterval(point, x));
     }
 
