@@ -17,52 +17,52 @@ public class JaccardTest {
     }
 
     public static double computeJaccardStatisticForChromosome(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
-        Integer intersection = getIntersectionValue(queryIntervals, referenceIntervals);
-        Integer union = getUnionValue(queryIntervals, referenceIntervals);
+        Long intersection = getIntersectionValue(queryIntervals, referenceIntervals);
+        Long union = getUnionValue(queryIntervals, referenceIntervals);
         return (double) intersection / (double) union;
     }
 
     public static double computeJaccardStatisticForChromosomeSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
-        Integer intersection = getIntersectionValueForTrackSet(referenceMap, queryMap);
-        Integer union = getUnionValueForTrackSet(referenceMap, queryMap);
+        Long intersection = getIntersectionValueForTrackSet(referenceMap, queryMap);
+        Long union = getUnionValueForTrackSet(referenceMap, queryMap);
         return (double) intersection / (double) union;
     }
 
-    static Integer getUnionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
+    static Long getUnionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         return Track.tracksUnion(queryIntervals, referenceIntervals).stream()
                     .map(Interval::getLength)
-                    .collect((Collectors.summingInt((Integer::valueOf))));
+                    .collect((Collectors.summingLong((Long::valueOf))));
     }
 
-    static Integer getUnionValue(Track queryIntervals, Track referenceIntervals) {
+    static Long getUnionValue(Track queryIntervals, Track referenceIntervals) {
         return Track.tracksUnion(queryIntervals.getIntervals(), referenceIntervals.getIntervals()).stream()
                     .map(Interval::getLength)
-                    .collect((Collectors.summingInt((Integer::valueOf))));
+                    .collect((Collectors.summingLong((Long::valueOf))));
     }
 
-    static Integer getUnionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    static Long getUnionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         return referenceMap.keySet().stream()
                 .map(name -> getUnionValue(queryMap.get(name), referenceMap.get(name)))
-                .mapToInt(Integer::valueOf)
+                .mapToLong(Long::valueOf)
                 .sum();
     }
 
-    static Integer getIntersectionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
+    static Long getIntersectionValue(Deque<Interval> queryIntervals, Deque<Interval> referenceIntervals) {
         return Track.trackIntersection(queryIntervals, referenceIntervals)
                     .map(Interval::getLength)
-                    .collect((Collectors.summingInt((Integer::valueOf))));
+                    .collect((Collectors.summingLong((Long::valueOf))));
     }
 
-    static Integer getIntersectionValue(Track queryIntervals, Track referenceIntervals) {
+    static Long getIntersectionValue(Track queryIntervals, Track referenceIntervals) {
         return Track.trackIntersection(queryIntervals.getIntervals(), referenceIntervals.getIntervals())
                 .map(Interval::getLength)
-                .collect((Collectors.summingInt((Integer::valueOf))));
+                .collect((Collectors.summingLong((Long::valueOf))));
     }
 
-    static Integer getIntersectionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    static Long getIntersectionValueForTrackSet(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         return referenceMap.keySet().stream()
                 .map(name -> getIntersectionValue(queryMap.get(name), referenceMap.get(name)))
-                .mapToInt(Integer::valueOf)
+                .mapToLong(Long::valueOf)
                 .sum();
     }
 
