@@ -59,10 +59,10 @@ public class RandomTrackGeneratorTest {
 
         assertThat(generatedTrack.getTrackEnd(), lessThanOrEqualTo(referenceTrack.getLength()));
         assertThat(generatedTrack.getNumberOfIntervals(), is(queryTrack.getNumberOfIntervals()));
-        Set<Integer> generatedTrackIntervalSet = generatedTrack.getIntervals().stream()
+        Set<Long> generatedTrackIntervalSet = generatedTrack.getIntervals().stream()
                 .map(Interval::getLength)
                 .collect(Collectors.toSet());
-        Set<Integer> queryTrackIntervalSet = queryTrack.getIntervals().stream()
+        Set<Long> queryTrackIntervalSet = queryTrack.getIntervals().stream()
                 .map(Interval::getLength)
                 .collect(Collectors.toSet());
         assertThat(generatedTrackIntervalSet, is(queryTrackIntervalSet));

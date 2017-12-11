@@ -61,7 +61,7 @@ public class RandomTrackGenerator {
         return generatedTrack;
     }
 
-    public static Track generateRandomTrackLike(int length, Track track) {
+    public static Track generateRandomTrackLike(long length, Track track) {
         Track generatedTrack = new Track();
 
         for (Interval i: track.getIntervals()) {
