@@ -7,6 +7,7 @@ import banding.entity.Track;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomTrackGenerator {
 
@@ -32,7 +33,7 @@ public class RandomTrackGenerator {
         return generateRandomTrackByReferenceLike(reference, query, startReference, endReference);
     }
 
-    public static Track generateRandomTrackByReferenceLike(Track reference, Track query, int from, int to) {
+    public static Track generateRandomTrackByReferenceLike(Track reference, Track query, long from, long to) {
 
         Track generatedTrack = new Track();
 
@@ -73,7 +74,7 @@ public class RandomTrackGenerator {
         return generateRandomInterval(interval.getLength(), from, to);
     }
 
-    static Interval generateRandomInterval(int length, int from, int to) {
+    static Interval generateRandomInterval(long length, long from, long to) {
         if ( (from + length) > to ) {
             throw new RuntimeException("It's impossible create an interval with length " + length
                     + " in track from " + from + " to " + to);
@@ -86,7 +87,7 @@ public class RandomTrackGenerator {
         Random random = new Random();
         Interval interval = null;
         while (interval == null) {
-            int start = from + random.nextInt(to);
+            long start = from + ThreadLocalRandom.current().nextLong(to);
             if ((start + length) <= to) {
                 interval = new Interval(start, start + length);
             }

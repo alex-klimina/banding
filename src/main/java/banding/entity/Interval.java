@@ -13,10 +13,10 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Interval implements Comparable<Interval> {
     private String name;
-    private int startIndex;
-    private int endIndex;
+    private long startIndex;
+    private long endIndex;
 
-    public Interval(int startIndex, int endIndex) {
+    public Interval(long startIndex, long endIndex) {
         this(null, startIndex, endIndex);
     }
 
@@ -24,11 +24,11 @@ public class Interval implements Comparable<Interval> {
         this.name = name;
     }
 
-    public static int middleOfInterval(Interval interval) {
+    public static long middleOfInterval(Interval interval) {
         return interval.getStartIndex() + (interval.getEndIndex() - interval.getStartIndex())/2;
     }
 
-    public static boolean isPointInInterval(int point, Interval interval) {
+    public static boolean isPointInInterval(long point, Interval interval) {
         return ((interval.getStartIndex() <= point) && (point <= interval.getEndIndex()));
     }
 
@@ -63,13 +63,13 @@ public class Interval implements Comparable<Interval> {
         }
     }
 
-    public int getLength() {
+    public long getLength() {
         return endIndex - startIndex + 1;
     }
 
     @Override
     public int compareTo(Interval o) {
-        return this.getStartIndex() - o.getStartIndex();
+        return (int) (this.getStartIndex() - o.getStartIndex());
     }
 }
 
