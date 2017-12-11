@@ -1,6 +1,7 @@
 package banding.generator;
 
 import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
 
@@ -10,6 +11,15 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomTrackGenerator {
+
+    public static Genome generateGenomeByReferenceLike(Genome reference, Genome query) {
+        Genome generatedGenome = new Genome();
+        for (Chromosome c: reference.getChromosomes()) {
+            Chromosome randomChromosome = generateRandomChromosomeByReferenceLike(c, query.getChromosome(c.getName()));
+            generatedGenome.addChromosome(randomChromosome);
+        }
+        return generatedGenome;
+    }
 
     public static Map<String, Track> generateChromosomeSetByReferenceLike(
             Map<String, Track> reference,
