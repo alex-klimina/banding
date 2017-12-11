@@ -24,7 +24,8 @@ public class RandomTrackGenerator {
     }
 
     public static Chromosome generateRandomChromosomeByReferenceLike(Chromosome reference, Chromosome query) {
-        return generateRandomTrackByReferenceLike(reference.getTrack(), query.getTrack(), reference.getStart(), reference.getEnd());
+        Track generateTrack= generateRandomTrackByReferenceLike(reference.getTrack(), query.getTrack(), reference.getStart(), reference.getEnd());
+        return new Chromosome(query.getName(), generateTrack, reference.getStart(), reference.getEnd());
     }
 
     public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
