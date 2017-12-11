@@ -1,5 +1,6 @@
 package banding.generator;
 
+import banding.entity.Chromosome;
 import banding.entity.Interval;
 import banding.entity.Track;
 
@@ -19,6 +20,10 @@ public class RandomTrackGenerator {
             generatedChromosomeSet.put(entry.getKey(), randomTrack);
         }
         return generatedChromosomeSet;
+    }
+
+    public static Chromosome generateRandomChromosomeByReferenceLike(Chromosome reference, Chromosome query) {
+        return generateRandomTrackByReferenceLike(reference.getTrack(), query.getTrack(), reference.getStart(), reference.getEnd());
     }
 
     public static Track generateRandomTrackByReferenceLike(Track reference, Track query) {
