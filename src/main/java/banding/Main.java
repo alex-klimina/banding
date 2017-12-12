@@ -50,7 +50,6 @@ public class Main {
         System.out.println("length = " + reference.getLength());
 
         int n = 1000;
-        computeCoverageAndGenomLength(reference);
         System.out.println();
         printExpectedDistributionForProjectionTest(reference, query);
         System.out.println();
@@ -87,19 +86,6 @@ public class Main {
 
         System.out.println("Number of intervals: " + numberOfIntervals);
         System.out.println("Expected average: " + p * numberOfIntervals);
-    }
-
-    private static void computeCoverageAndGenomLength(Genome reference) {
-        long length = 0;
-        long coverage = 0;
-        for (Chromosome c: reference.getChromosomes()) {
-            length += c.getLength();
-            coverage += c.getCoverage();
-        }
-        System.out.println("Coverage the reference: " + coverage);
-        System.out.println("Length the reference: " + length);
-        double p = (double) coverage / (double) length;
-        System.out.println("p for one mapped point: " + p);
     }
 
     private static DoubleSummaryStatistics generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
