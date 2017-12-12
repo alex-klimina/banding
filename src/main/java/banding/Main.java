@@ -13,6 +13,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.List;
@@ -44,17 +45,31 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        int n = 1000;
         computeCoverageAndGenomLength(reference);
+        System.out.println();
         printExpectedDistributionParameters(reference, query);
+        System.out.println();
+
+        System.out.println("projectionCount for CpG: " + ProjectionTest.countProjection(reference, query));
+        System.out.println("projectionCount for random tracks by CpG:" + generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n));
+
+//        computeProjectionTestForSeparateChromosomes(reference, query, n);
 
 
-        int n = 10;
-
-        //TODO work with Genom
-        generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
 //        generateRandomTrackAndComputeJaccardStatistic(reference, query);
 //        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
 
+    }
+
+    private static void computeProjectionTestForSeparateChromosomes(Genome reference, Genome query, int n) {
+        for (Chromosome c: reference.getChromosomes()) {
+            Genome tempGenome = new Genome(Collections.singletonList(c));
+            DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
+            System.out.println(c.getName());
+            printExpectedDistributionParameters(tempGenome, query);
+            System.out.println(statistics);
+        }
     }
 
     private static void printExpectedDistributionParameters(Genome reference, Genome query) {
@@ -96,12 +111,7 @@ public class Main {
         System.out.println("p for one mapped point: " + p);
     }
 
-    private static void generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
-
-        System.out.println("======");
-        System.out.println("Whole genome");
-        System.out.println("projectionCount for CpG:");
-        System.out.println(ProjectionTest.countProjection(referenceMap, queryMap));
+    private static DoubleSummaryStatistics generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
         int capacity = numberOfExperiments;
         List<Integer> stats = IntStream.range(0, capacity).boxed()
@@ -109,11 +119,8 @@ public class Main {
                 .map(x -> getProjectionCountForRandomChromosome(referenceMap, queryMap))
                 .collect(Collectors.toList());
 
-        System.out.println("projectionCount for random tracks by CpG: ");
         DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-        System.out.println(summaryStatistics);
-        System.out.println("all values:");
-        System.out.println(stats);
+        return summaryStatistics;
     }
 
     private static int getProjectionCountForRandomChromosome(Genome reference, Genome query) {
