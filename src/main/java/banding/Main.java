@@ -7,11 +7,14 @@ import banding.entity.Track;
 import banding.generator.RandomTrackGenerator;
 import banding.metric.JaccardTest;
 import banding.metric.ProjectionTest;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
@@ -26,7 +29,7 @@ import static org.apache.spark.sql.functions.col;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         SparkSession spark = SparkSession
                 .builder()
                 .master("local[4]")
@@ -45,24 +48,27 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        System.out.println("Expected distribution: ");
-        System.out.println("coverage = " + reference.getCoverage());
-        System.out.println("length = " + reference.getLength());
-
-        int n = 1000;
-        System.out.println();
-        printExpectedDistributionForProjectionTest(reference, query);
-        System.out.println();
+        String output = "reportProjectionTest.txt";
+        getReportForProjectionTest(reference, query, output);
 
         System.out.println("projectionCount for CpG: " + ProjectionTest.countProjection(reference, query));
         System.out.println("projectionCount for random tracks by CpG:" + generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n));
 
 //        computeProjectionTestForSeparateChromosomes(reference, query, n);
-
-
 //        generateRandomTrackAndComputeJaccardStatistic(reference, query);
 //        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
 
+    }
+
+    private static void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
+        File file = new File(output);
+        FileUtils.writeStringToFile(file, "Сoverage of reference: " + reference.getCoverage());
+        FileUtils.writeStringToFile(file, "Length of reference: " + reference.getLength());
+        FileUtils.writeStringToFile(file, "Probability match point to reference: p = coverage/length = " + query.getNumberOfIntervals());
+        FileUtils.writeStringToFile(file, "Number of intervals in query: " + query.getNumberOfIntervals());
+        FileUtils.writeStringToFile(file, "Expected value for binomial distribution: " + getExpectedValueForBinomialDistribution(reference, query));
+
+        int n = 1000;
     }
 
     private static void computeProjectionTestForSeparateChromosomes(Genome reference, Genome query, int n) {
@@ -70,22 +76,15 @@ public class Main {
             Genome tempGenome = new Genome(Collections.singletonList(c));
             DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
             System.out.println(c.getName());
-            printExpectedDistributionForProjectionTest(tempGenome, query);
+            getExpectedValueForBinomialDistribution(tempGenome, query);
             System.out.println(statistics);
         }
     }
 
-    private static void printExpectedDistributionForProjectionTest(Genome reference, Genome query) {
+    private static double getExpectedValueForBinomialDistribution(Genome reference, Genome query) {
         double p = ((double) reference.getCoverage()) / ( (double) reference.getLength());
-        System.out.println("p = coverage / length = " + p);
-
-        int numberOfIntervals = 0;
-        for (Chromosome c: reference.getChromosomes()) {
-            numberOfIntervals += query.getChromosome(c.getName()).getNumberOfIntervals();
-        }
-
-        System.out.println("Number of intervals: " + numberOfIntervals);
-        System.out.println("Expected average: " + p * numberOfIntervals);
+        long numberOfIntervals = query.getNumberOfIntervals();
+        return p * numberOfIntervals;
     }
 
     private static DoubleSummaryStatistics generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
