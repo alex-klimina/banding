@@ -37,4 +37,12 @@ public class Genome {
         }
         return coverage;
     }
+
+    public long getNumberOfIntervals() {
+        long numberOfIntervals = 0;
+        for (Chromosome c: this.getChromosomes()) {
+            numberOfIntervals += c.getNumberOfIntervals();
+        }
+        return numberOfIntervals;
+    }
 }
