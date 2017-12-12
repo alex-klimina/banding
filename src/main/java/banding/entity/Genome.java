@@ -21,4 +21,20 @@ public class Genome {
     public void addChromosome(Chromosome chromosome) {
         chromosomes.add(chromosome);
     }
+
+    public long getLength() {
+        long length = 0;
+        for (Chromosome c: this.getChromosomes()) {
+            length += c.getLength();
+        }
+        return length;
+    }
+
+    public long getCoverage() {
+        long coverage = 0;
+        for (Chromosome c: this.getChromosomes()) {
+            coverage += c.getCoverage();
+        }
+        return coverage;
+    }
 }
