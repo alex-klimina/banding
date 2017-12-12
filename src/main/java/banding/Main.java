@@ -52,7 +52,7 @@ public class Main {
         int n = 1000;
         computeCoverageAndGenomLength(reference);
         System.out.println();
-        printExpectedDistributionParameters(reference, query);
+        printExpectedDistributionForProjectionTest(reference, query);
         System.out.println();
 
         System.out.println("projectionCount for CpG: " + ProjectionTest.countProjection(reference, query));
@@ -71,12 +71,12 @@ public class Main {
             Genome tempGenome = new Genome(Collections.singletonList(c));
             DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
             System.out.println(c.getName());
-            printExpectedDistributionParameters(tempGenome, query);
+            printExpectedDistributionForProjectionTest(tempGenome, query);
             System.out.println(statistics);
         }
     }
 
-    private static void printExpectedDistributionParameters(Genome reference, Genome query) {
+    private static void printExpectedDistributionForProjectionTest(Genome reference, Genome query) {
         double p = ((double) reference.getCoverage()) / ( (double) reference.getLength());
         System.out.println("p = coverage / length = " + p);
 
