@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 public class Genome {
-    private List<Chromosome> chromosomes;
+    private List<Chromosome> chromosomes = new ArrayList<>();
 
     public Chromosome getChromosome(String name) {
         return chromosomes.stream().filter(x -> x.getName().equals(name)).collect(Collectors.toList()).get(0);
