@@ -45,6 +45,10 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG.csv";
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        System.out.println("Expected distribution: ");
+        System.out.println("coverage = " + reference.getCoverage());
+        System.out.println("length = " + reference.getLength());
+
         int n = 1000;
         computeCoverageAndGenomLength(reference);
         System.out.println();
@@ -73,20 +77,7 @@ public class Main {
     }
 
     private static void printExpectedDistributionParameters(Genome reference, Genome query) {
-        System.out.println("Expected distribution: ");
-
-        long coverage = 0;
-        long length = 0;
-
-        for (Chromosome c: reference.getChromosomes()) {
-            coverage += c.getCoverage();
-            length += c.getLength();
-        }
-        System.out.println("coverage = " + coverage);
-        System.out.println("length = " + length);
-
-
-        double p = ((double) coverage) / ( (double) length);
+        double p = ((double) reference.getCoverage()) / ( (double) reference.getLength());
         System.out.println("p = coverage / length = " + p);
 
         int numberOfIntervals = 0;
