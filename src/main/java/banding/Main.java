@@ -51,8 +51,6 @@ public class Main {
         String output = "reportProjectionTest.txt";
         getReportForProjectionTest(reference, query, output);
 
-        System.out.println("projectionCount for CpG: " + ProjectionTest.countProjection(reference, query));
-        System.out.println("projectionCount for random tracks by CpG:" + generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n));
 
 //        computeProjectionTestForSeparateChromosomes(reference, query, n);
 //        generateRandomTrackAndComputeJaccardStatistic(reference, query);
@@ -62,13 +60,24 @@ public class Main {
 
     private static void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
         File file = new File(output);
-        FileUtils.writeStringToFile(file, "Сoverage of reference: " + reference.getCoverage());
-        FileUtils.writeStringToFile(file, "Length of reference: " + reference.getLength());
-        FileUtils.writeStringToFile(file, "Probability match point to reference: p = coverage/length = " + query.getNumberOfIntervals());
-        FileUtils.writeStringToFile(file, "Number of intervals in query: " + query.getNumberOfIntervals());
-        FileUtils.writeStringToFile(file, "Expected value for binomial distribution: " + getExpectedValueForBinomialDistribution(reference, query));
 
-        int n = 1000;
+        addLineToFile(file, "Сoverage of reference: " + reference.getCoverage());
+        addLineToFile(file, "Length of reference: " + reference.getLength());
+        double p = ((double) reference.getCoverage()) / ((double) reference.getLength());
+        addLineToFile(file, "Probability match point to reference: p = coverage/length = " + p);
+        addLineToFile(file, "Number of intervals in query: " + query.getNumberOfIntervals());
+        addLineToFile(file, "Expected value for binomial distribution: " + getExpectedValueForBinomialDistribution(reference, query));
+        addLineToFile(file, "ProjectionCount for query: "
+                + ProjectionTest.countProjection(reference, query));
+
+        int n = 10;
+        addLineToFile(file, "ProjectionCount for random tracks by query:"
+                + generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n));
+    }
+
+    private static void addLineToFile(File file, String line) throws IOException {
+        boolean append = true;
+        FileUtils.writeStringToFile(file, line + "\n", append);
     }
 
     private static void computeProjectionTestForSeparateChromosomes(Genome reference, Genome query, int n) {
