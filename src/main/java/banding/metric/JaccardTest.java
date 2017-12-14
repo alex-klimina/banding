@@ -1,16 +1,32 @@
 package banding.metric;
 
 import banding.IntervalReader;
+import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JaccardTest {
+
+
+    public static double computeJaccardStatisticForGenome(Genome reference, Genome query) {
+        HashMap<String, Track> referenceMap = new HashMap();
+        for (Chromosome c: reference.getChromosomes()) {
+            referenceMap.put(c.getName(), c.getTrack());
+        }
+        HashMap<String, Track> queryMap = new HashMap();
+        for (Chromosome c: query.getChromosomes()) {
+            queryMap.put(c.getName(), c.getTrack());
+        }
+        return computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
+    }
 
     public static double computeJaccardStatisticForChromosome(Track query, Track reference) {
         return computeJaccardStatisticForChromosome(query.getIntervals(), reference.getIntervals());

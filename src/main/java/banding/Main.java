@@ -60,13 +60,11 @@ public class Main {
         String queryPath = "src/main/resources/hgTables_CpG_only_main.csv";
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        String output = "reportProjectionTest.txt";
-        main.getReportForProjectionTest(reference, query, output);
+        String outputProjectionTest = "reportProjectionTest.txt";
+        main.getReportForProjectionTest(reference, query, outputProjectionTest);
 
-
-//        computeProjectionTestForSeparateChromosomes(reference, query, n);
-//        generateRandomTrackAndComputeJaccardStatistic(reference, query);
-//        generateRandomChromosomeSetsAndComputeJaccardStatistic(reference, query);
+        String outputJaccardTest = "reportJaccardTest.txt";
+        main.getReportForJaccardTest(reference, query, outputJaccardTest);
 
     }
 
@@ -105,10 +103,40 @@ public class Main {
 
     }
 
-    private double[] getDoubleArray(List<Integer> list) {
+    private void getReportForJaccardTest(Genome reference, Genome query, String output) throws IOException {
+        File file = new File(output);
+        addLineToFile(file, "Сoverage of reference: " + reference.getCoverage());
+        addLineToFile(file, "Length of reference: " + reference.getLength());
+
+        double queryProjectionTest = JaccardTest.computeJaccardStatisticForGenome(reference, query);
+        addLineToFile(file, "JaccardTest for query: "
+                + queryProjectionTest);
+
+        int n = 100;
+        List<Double> jaccardTestExperiments = generateRandomChromosomeSetsAndComputeJaccardTest(reference, query, n);
+        addLineToFile(file, "JaccardTest for random tracks by query:"
+                + jaccardTestExperiments);
+
+        Double mean = jaccardTestExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf));
+        Double sumDev = jaccardTestExperiments.stream()
+                .map(x -> ((double) x - mean) * ((double) x - mean))
+                .collect(Collectors.summingDouble(Double::valueOf));
+        double sd = Math.sqrt(sumDev / n);
+
+        JavaDoubleRDD rdd = getSparkContext().parallelize(jaccardTestExperiments).mapToDouble(Double::doubleValue); //.mapToDouble(Double::valueOf);
+        KolmogorovSmirnovTestResult result = Statistics.kolmogorovSmirnovTest(rdd, "norm", mean, sd);
+        addLineToFile(file, result.toString());
+
+        TTest tTest = new TTest();
+        double tTestPValue = tTest.tTest(queryProjectionTest, getDoubleArray(jaccardTestExperiments));
+        addLineToFile(file, "pValue for query track: " + tTestPValue);
+
+    }
+
+    private double[] getDoubleArray(List<? extends Number> list) {
         double[] arr = new double[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            arr[i] = list.get(i);
+            arr[i] = list.get(i).doubleValue();
         }
         return arr;
     }
@@ -152,7 +180,26 @@ public class Main {
         return stats;
     }
 
+    private static List<Double> generateRandomChromosomeSetsAndComputeJaccardTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+        int capacity = numberOfExperiments;
+        List<Double> stats = IntStream.range(0, capacity).boxed()
+                .parallel()
+                .map(x -> getJaccardTestForRandomChromosome(referenceMap, queryMap))
+                .collect(Collectors.toList());
+        return stats;
+    }
+
     private static int getProjectionCountForRandomChromosome(Genome reference, Genome query) {
+        Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
+        return ProjectionTest.countProjection(reference, randomGenome);
+    }
+
+    private static double getJaccardTestForRandomChromosome(Genome reference, Genome query) {
+        Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
+        return JaccardTest.computeJaccardStatisticForGenome(reference, randomGenome);
+    }
+
+    private static Genome generateRandomGenomeByReferenceLike(Genome reference, Genome query) {
         Map<String, Track> referenceMap = new HashMap<>();
         reference.getChromosomes().stream()
                 .forEach(x -> referenceMap.put(x.getName(), x.getTrack()));
@@ -161,8 +208,7 @@ public class Main {
         query.getChromosomes().stream()
                 .forEach(x -> queryMap.put(x.getName(), x.getTrack()));
 
-        Genome randomGenome = RandomTrackGenerator.generateGenomeByReferenceLike(reference, query);
-        return ProjectionTest.countProjection(reference, randomGenome);
+        return RandomTrackGenerator.generateGenomeByReferenceLike(reference, query);
     }
 
     private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
