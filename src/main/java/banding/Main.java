@@ -87,9 +87,15 @@ public class Main {
             System.out.println(getExpectedValueForBinomialDistribution(
                     tempGenome,
                     new Genome(Collections.singletonList(query.getChromosome(c.getName())))));
-            DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
-            System.out.println(statistics);
+            List<Integer> projectionTestRandomExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
+            DoubleSummaryStatistics summaryStatistics = getStatisticForExperiments(projectionTestRandomExperiments);
+            System.out.println("Summary statistic: " + summaryStatistics);
+            System.out.println(projectionTestRandomExperiments);
         }
+    }
+
+    private static DoubleSummaryStatistics getStatisticForExperiments(List<Integer> experiments) {
+        return experiments.stream().collect(Collectors.summarizingDouble(Double::valueOf));
     }
 
     private static double getExpectedValueForBinomialDistribution(Genome reference, Genome query) {
@@ -98,16 +104,14 @@ public class Main {
         return p * numberOfIntervals;
     }
 
-    private static DoubleSummaryStatistics generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+    private static List<Integer> generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
         int capacity = numberOfExperiments;
         List<Integer> stats = IntStream.range(0, capacity).boxed()
                 .parallel()
                 .map(x -> getProjectionCountForRandomChromosome(referenceMap, queryMap))
                 .collect(Collectors.toList());
-
-        DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-        return summaryStatistics;
+        return stats;
     }
 
     private static int getProjectionCountForRandomChromosome(Genome reference, Genome query) {
