@@ -56,15 +56,20 @@ public class Main {
 
         String referencePath = "src/main/resources/hgTables_ref_only_main.csv";
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
-        String queryPath = args[0];
-        Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        String outputProjectionTest = "reportProjectionTest.txt";
-        main.getReportForProjectionTest(reference, query, outputProjectionTest);
+        List<String> queryPaths = new ArrayList<>();
+        queryPaths.add("src/main/resources/hgTables_CpG.csv");
+        queryPaths.add("src/main/resources/hgTables_DNAse_HS.csv");
+        queryPaths.add("src/main/resources/hgTables_layered_H3K4Me1.csv");
+        queryPaths.add("src/main/resources/hgTables_microsatellit.csv");
 
-        String outputJaccardTest = "reportJaccardTest.txt";
-        main.getReportForJaccardTest(reference, query, outputJaccardTest);
-
+        for (String queryPath: queryPaths) {
+            Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
+            String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
+            main.getReportForProjectionTest(reference, query, outputProjectionTest);
+            String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
+            main.getReportForJaccardTest(reference, query, outputJaccardTest);
+        }
     }
 
     private void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
