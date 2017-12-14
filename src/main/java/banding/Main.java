@@ -42,10 +42,10 @@ public class Main {
                 .option("inferSchema", "true")
                 .option("header", "true");
 
-        String referencePath = "src/main/resources/hgTables_ref.csv";
+        String referencePath = "src/main/resources/hgTables_ref_only_main.csv";
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
 
-        String queryPath = "src/main/resources/hgTables_CpG.csv";
+        String queryPath = "src/main/resources/hgTables_CpG_only_main.csv";
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         String output = "reportProjectionTest.txt";
@@ -83,9 +83,11 @@ public class Main {
     private static void computeProjectionTestForSeparateChromosomes(Genome reference, Genome query, int n) {
         for (Chromosome c: reference.getChromosomes()) {
             Genome tempGenome = new Genome(Collections.singletonList(c));
-            DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
             System.out.println(c.getName());
-            getExpectedValueForBinomialDistribution(tempGenome, query);
+            System.out.println(getExpectedValueForBinomialDistribution(
+                    tempGenome,
+                    new Genome(Collections.singletonList(query.getChromosome(c.getName())))));
+            DoubleSummaryStatistics statistics = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
             System.out.println(statistics);
         }
     }
