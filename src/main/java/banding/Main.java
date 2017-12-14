@@ -56,8 +56,7 @@ public class Main {
 
         String referencePath = "src/main/resources/hgTables_ref_only_main.csv";
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
-
-        String queryPath = "src/main/resources/hgTables_CpG_only_main.csv";
+        String queryPath = args[0];
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         String outputProjectionTest = "reportProjectionTest.txt";
@@ -82,7 +81,7 @@ public class Main {
         addLineToFile(file, "ProjectionCount for query: "
                 + queryProjectionTest);
 
-        int n = 100;
+        int n = 1000;
         List<Integer> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
         addLineToFile(file, "ProjectionCount for random tracks by query:"
                 + projectionTestExperiments);
@@ -112,7 +111,7 @@ public class Main {
         addLineToFile(file, "JaccardTest for query: "
                 + queryProjectionTest);
 
-        int n = 100;
+        int n = 1000;
         List<Double> jaccardTestExperiments = generateRandomChromosomeSetsAndComputeJaccardTest(reference, query, n);
         addLineToFile(file, "JaccardTest for random tracks by query:"
                 + jaccardTestExperiments);
