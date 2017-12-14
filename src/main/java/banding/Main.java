@@ -8,6 +8,11 @@ import banding.generator.RandomTrackGenerator;
 import banding.metric.JaccardTest;
 import banding.metric.ProjectionTest;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.stat.inference.TTest;
+import org.apache.spark.api.java.JavaDoubleRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.mllib.stat.Statistics;
+import org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -29,12 +34,19 @@ import static org.apache.spark.sql.functions.col;
 
 public class Main {
 
+    private static SparkSession spark = SparkSession
+            .builder()
+            .master("local[4]")
+            .appName("Banding")
+            .getOrCreate();
+
+    private JavaSparkContext getSparkContext() {
+        return JavaSparkContext.fromSparkContext(spark.sparkContext());
+    }
+
     public static void main(String[] args) throws IOException {
-        SparkSession spark = SparkSession
-                .builder()
-                .master("local[4]")
-                .appName("Banding")
-                .getOrCreate();
+
+        Main main = new Main();
 
         DataFrameReader dataFrameReader = spark.read()
                 .format("com.databricks.spark.csv")
@@ -49,7 +61,7 @@ public class Main {
         Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
         String output = "reportProjectionTest.txt";
-        getReportForProjectionTest(reference, query, output);
+        main.getReportForProjectionTest(reference, query, output);
 
 
 //        computeProjectionTestForSeparateChromosomes(reference, query, n);
@@ -58,7 +70,7 @@ public class Main {
 
     }
 
-    private static void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
+    private void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
         File file = new File(output);
 
         addLineToFile(file, "Сoverage of reference: " + reference.getCoverage());
@@ -66,13 +78,39 @@ public class Main {
         double p = ((double) reference.getCoverage()) / ((double) reference.getLength());
         addLineToFile(file, "Probability match point to reference: p = coverage/length = " + p);
         addLineToFile(file, "Number of intervals in query: " + query.getNumberOfIntervals());
-        addLineToFile(file, "Expected value for binomial distribution: " + getExpectedValueForBinomialDistribution(reference, query));
+        double expectedValueForBinomialDistribution = getExpectedValueForBinomialDistribution(reference, query);
+        addLineToFile(file, "Expected value for binomial distribution: " + expectedValueForBinomialDistribution);
+        int queryProjectionTest = ProjectionTest.countProjection(reference, query);
         addLineToFile(file, "ProjectionCount for query: "
-                + ProjectionTest.countProjection(reference, query));
+                + queryProjectionTest);
 
-        int n = 10;
+        int n = 100;
+        List<Integer> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
         addLineToFile(file, "ProjectionCount for random tracks by query:"
-                + generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n));
+                + projectionTestExperiments);
+
+        Double mean = projectionTestExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf));
+        Double sumDev = projectionTestExperiments.stream()
+                .map(x -> ((double) x - mean) * ((double) x - mean))
+                .collect(Collectors.summingDouble(Double::valueOf));
+        double sd = Math.sqrt(sumDev / n);
+
+        JavaDoubleRDD rdd = getSparkContext().parallelize(projectionTestExperiments).mapToDouble(Double::valueOf);
+        KolmogorovSmirnovTestResult result = Statistics.kolmogorovSmirnovTest(rdd, "norm", mean, sd);
+        addLineToFile(file, result.toString());
+
+        TTest tTest = new TTest();
+        double tTestPValue = tTest.tTest(queryProjectionTest, getDoubleArray(projectionTestExperiments));
+        addLineToFile(file, "pValue for query track: " + tTestPValue);
+
+    }
+
+    private double[] getDoubleArray(List<Integer> list) {
+        double[] arr = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            arr[i] = list.get(i);
+        }
+        return arr;
     }
 
     private static void addLineToFile(File file, String line) throws IOException {
