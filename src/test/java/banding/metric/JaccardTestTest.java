@@ -162,7 +162,7 @@ public class JaccardTestTest {
         queryMap.put("Chr1", queryChr1);
         queryMap.put("Chr2", queryChr2);
 
-        assertThat(JaccardTest.getIntersectionValueForTrackSet(referenceMap, queryMap), is(74));
+        assertThat(JaccardTest.getIntersectionValueForTrackSet(referenceMap, queryMap), is(80L));
     }
 
     @Test
