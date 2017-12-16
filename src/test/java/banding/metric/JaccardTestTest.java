@@ -137,7 +137,7 @@ public class JaccardTestTest {
         queryMap.put("Chr1", queryChr1);
         queryMap.put("Chr2", queryChr2);
 
-        assertThat(JaccardTest.getUnionValueForTrackSet(referenceMap, queryMap), is(117));
+        assertThat(JaccardTest.getUnionValueForTrackSet(referenceMap, queryMap), is(119L));
     }
 
     @Test
