@@ -86,12 +86,12 @@ public class RandomTrackGenerator {
     }
 
     static Interval generateRandomInterval(long length, long from, long to) {
-        if ( (from + length) > to ) {
+        if ( (from + length - 1) > to ) {
             throw new RuntimeException("It's impossible create an interval with length " + length
                     + " in track from " + from + " to " + to);
         }
         // if there is only one possibility for interval with that length
-        if ( (from + length) == to ) {
+        if ( (from + length - 1) == to ) {
             return new Interval(from, to);
         }
 
@@ -99,8 +99,8 @@ public class RandomTrackGenerator {
         Interval interval = null;
         while (interval == null) {
             long start = from + ThreadLocalRandom.current().nextLong(to);
-            if ((start + length) <= to) {
-                interval = new Interval(start, start + length);
+            if ((start + length - 1) <= to) {
+                interval = new Interval(start, start + length - 1);
             }
         }
         return interval;
