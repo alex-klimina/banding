@@ -100,7 +100,7 @@ public class JaccardTestTest {
         Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
         Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
-        assertThat(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals), is(closeTo(0.632, 0.001)));
+        assertThat(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals), is(closeTo(0.672, 0.001)));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class JaccardTestTest {
         queryMap.put("Chr1", queryChr1);
         queryMap.put("Chr2", queryChr2);
 
-        assertThat(JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap), is(closeTo(0.632, 0.001)));
+        assertThat(JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap), is(closeTo(0.672, 0.001)));
     }
 
     @Test
