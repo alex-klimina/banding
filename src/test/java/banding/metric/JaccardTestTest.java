@@ -32,7 +32,7 @@ public class JaccardTestTest {
         query.add(new Interval(219, 234));
         query.add(new Interval(242, 257));
 
-        assertThat(JaccardTest.getIntersectionValue(reference, query), is(74));
+        assertThat(JaccardTest.getIntersectionValue(reference, query), is(80L));
     }
 
     @Test
