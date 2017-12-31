@@ -74,6 +74,7 @@ public class RandomTrackGenerator {
             generatedTrack.addInterval(randomInterval);
         }
 
+//      TODO   generatedTrack.sortIntervals();
         return generatedTrack;
     }
 

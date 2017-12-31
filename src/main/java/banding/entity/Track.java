@@ -111,6 +111,7 @@ public class Track {
     }
 
     public long getLength() {
+        // TODO  work on sorted intervals
         return getTrackEnd() - getTrackStart() + 1;
     }
 
