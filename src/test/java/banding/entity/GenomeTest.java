@@ -66,4 +66,11 @@ public class GenomeTest {
         assertThat(genome.getChromosome("chr2"), is(chr2));
     }
 
+    @Test
+    public void shouldCheckAllArgsConstructor() {
+        Genome genomeAllArgs = new Genome(chromosomes);
+        Genome genomeWithoutArgs = new Genome();
+        chromosomes.forEach(x -> genomeWithoutArgs.addChromosome(x));
+        assertThat(genomeAllArgs, is(genomeWithoutArgs));
+    }
 }
