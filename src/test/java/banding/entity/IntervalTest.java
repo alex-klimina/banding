@@ -41,4 +41,11 @@ public class IntervalTest {
         Interval expectedUnionInterval = new Interval(0, 10);
         assertThat(Interval.intervalsUnion(interval1, interval2), is(expectedUnionInterval));
     }
+
+    @Test (expected = RuntimeException.class)
+    public void shouldThrowExceptionWhenIntervalsAreNotIntersected() {
+        Interval interval1 = new Interval(0, 5);
+        Interval interval2 = new Interval(7, 10);
+        Interval.intervalsUnion(interval1, interval2);
+    }
 }
