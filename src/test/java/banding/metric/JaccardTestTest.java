@@ -1,6 +1,8 @@
 package banding.metric;
 
 import banding.IntervalReader;
+import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
 import org.junit.Test;
@@ -79,6 +81,32 @@ public class JaccardTestTest {
         Deque<Interval> queryIntervals = new IntervalReader(query).read();
 
         assertThat(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals), is(closeTo(0.672, 0.001)));
+    }
+
+    @Test
+    public void shouldComputeJaccardMetricOnGenome() throws IOException {
+        String reference = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
+        String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/query.txt";
+
+        Deque<Interval> referenceIntervals = new IntervalReader(reference).read();
+        Deque<Interval> queryIntervals = new IntervalReader(query).read();
+
+        Genome genomeReference = new Genome();
+        long startIndexReference = referenceIntervals.getFirst().getStartIndex();
+        long endIndexReference = referenceIntervals.getLast().getEndIndex();
+        genomeReference.addChromosome(new Chromosome("chr1",
+                new Track(referenceIntervals),
+                startIndexReference,
+                endIndexReference));
+
+        Genome genomeQuery = new Genome();
+        long startIndexQuery = queryIntervals.getFirst().getStartIndex();
+        long endIndexQuery = queryIntervals.getLast().getEndIndex();
+        genomeQuery.addChromosome(new Chromosome("chr1",
+                new Track(queryIntervals),
+                startIndexQuery,
+                endIndexQuery));
+        assertThat(JaccardTest.computeJaccardStatisticForGenome(genomeReference, genomeQuery), is(closeTo(0.672, 0.001)));
     }
 
     @Test
