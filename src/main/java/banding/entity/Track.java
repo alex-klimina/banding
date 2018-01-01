@@ -69,7 +69,7 @@ public class Track {
                     .flatMap(q -> intervalAndTrackIntersection(q, referenceIntervals));
     }
 
-    public static Deque<Interval> tracksUnion(Deque<Interval> queryDeque, Deque<Interval> referenceDeque) {
+    public static Deque<Interval> tracksUnion(Deque<Interval> referenceDeque, Deque<Interval> queryDeque) {
         Deque<Interval> queryDequeInternal = new ArrayDeque<>(queryDeque);
         Deque<Interval> referenceDequeInternal = new ArrayDeque<>(referenceDeque);
 
