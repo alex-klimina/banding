@@ -234,4 +234,18 @@ public class TrackTest {
         assertThat(trackCreatedByList.getNumberOfIntervals(), is(3));
         assertThat(track.getNumberOfIntervals(), is(6));
     }
+
+    @Test
+    public void shouldComputeCoverage() {
+        Interval interval1 = new Interval(0, 5);
+        Interval interval2 = new Interval(8, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getCoverage(), is(6L + 5L + 23L));
+    }
 }
