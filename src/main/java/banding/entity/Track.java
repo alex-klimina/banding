@@ -31,15 +31,21 @@ public class Track {
     }
 
     public long getTrackStart() {
+        sortIntervals();
         return intervals.getFirst().getStartIndex();
     }
 
     public long getTrackEnd() {
+        sortIntervals();
         return intervals.getLast().getEndIndex();
     }
 
     public static boolean isPointInAnyIntervalOf(long point, Queue<Interval> intervals) {
         return intervals.stream().anyMatch(x -> isPointInInterval(point, x));
+    }
+
+    public boolean containsPoint(long point) {
+        return isPointInAnyIntervalOf(point, intervals);
     }
 
     public static Stream<Interval> intervalAndTrackIntersection(Interval interval, Queue<Interval> track) {
