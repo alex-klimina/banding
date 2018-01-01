@@ -174,4 +174,32 @@ public class TrackTest {
         Deque<Interval> union = Track.tracksUnion(track, track);
         assertArrayEquals(intersection.toArray(), union.toArray());
     }
+
+    @Test
+    public void checkLengthOnSortedTrack() {
+        Interval interval1 = new Interval(0, 5);
+        Interval interval2 = new Interval(8, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getLength(), is(41L));
+    }
+
+    @Test
+    public void checkLengthOnUnsortedTrack() {
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getLength(), is(49L));
+    }
 }
