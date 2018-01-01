@@ -137,4 +137,26 @@ public class TrackTest {
         assertFalse(track.containsPoint(45)); // not close to any of intervals
         assertFalse(track.containsPoint(55)); // after end
     }
+
+    @Test
+    public void shouldComputeUnionOfIntervals() {
+        Deque<Interval> reference = new ArrayDeque<>();
+        reference.add(new Interval(5, 55));
+        reference.add(new Interval(204, 255));
+
+        Deque<Interval> query = new ArrayDeque<>();
+        query.add(new Interval(5, 20));
+        query.add(new Interval(27, 42));
+        query.add(new Interval(47, 62));
+        query.add(new Interval(197, 212));
+        query.add(new Interval(219, 234));
+        query.add(new Interval(242, 257));
+
+        Deque<Interval> expectedTrack = new ArrayDeque<>();
+        expectedTrack.add(new Interval(5, 62));
+        expectedTrack.add(new Interval(197, 257));
+
+        assertArrayEquals(Track.tracksUnion(reference, query).toArray(), expectedTrack.toArray());
+
+    }
 }
