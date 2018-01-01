@@ -15,7 +15,7 @@ import static banding.entity.Track.isPointInAnyIntervalOf;
 public class ProjectionTest {
 
 
-    public static int countProjection(Genome reference, Genome query) {
+    public static long countProjection(Genome reference, Genome query) {
         int projectionCount = 0;
 
         for (Chromosome chromosome: reference.getChromosomes()) {
@@ -24,7 +24,7 @@ public class ProjectionTest {
         return projectionCount;
     }
 
-    public static int countProjection(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
+    public static long countProjection(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
         int projectionCount = 0;
 
         for (Map.Entry<String, Track> entry: referenceMap.entrySet()) {

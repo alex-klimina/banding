@@ -82,12 +82,12 @@ public class Main {
         addLineToFile(file, "Number of intervals in query: " + query.getNumberOfIntervals());
         double expectedValueForBinomialDistribution = getExpectedValueForBinomialDistribution(reference, query);
         addLineToFile(file, "Expected value for binomial distribution: " + expectedValueForBinomialDistribution);
-        int queryProjectionTest = ProjectionTest.countProjection(reference, query);
+        long queryProjectionTest = ProjectionTest.countProjection(reference, query);
         addLineToFile(file, "ProjectionCount for query: "
                 + queryProjectionTest);
 
         int n = 1000;
-        List<Integer> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
+        List<Long> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
         addLineToFile(file, "ProjectionCount for random tracks by query:"
                 + projectionTestExperiments);
 
@@ -157,14 +157,14 @@ public class Main {
             System.out.println(getExpectedValueForBinomialDistribution(
                     tempGenome,
                     new Genome(Collections.singletonList(query.getChromosome(c.getName())))));
-            List<Integer> projectionTestRandomExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
+            List<Long> projectionTestRandomExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
             DoubleSummaryStatistics summaryStatistics = getStatisticForExperiments(projectionTestRandomExperiments);
             System.out.println("Summary statistic: " + summaryStatistics);
             System.out.println(projectionTestRandomExperiments);
         }
     }
 
-    private static DoubleSummaryStatistics getStatisticForExperiments(List<Integer> experiments) {
+    private static DoubleSummaryStatistics getStatisticForExperiments(List<Long> experiments) {
         return experiments.stream().collect(Collectors.summarizingDouble(Double::valueOf));
     }
 
@@ -174,10 +174,10 @@ public class Main {
         return p * numberOfIntervals;
     }
 
-    private static List<Integer> generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+    private static List<Long> generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
         int capacity = numberOfExperiments;
-        List<Integer> stats = IntStream.range(0, capacity).boxed()
+        List<Long> stats = IntStream.range(0, capacity).boxed()
                 .parallel()
                 .map(x -> getProjectionCountForRandomChromosome(referenceMap, queryMap))
                 .collect(Collectors.toList());
@@ -193,7 +193,7 @@ public class Main {
         return stats;
     }
 
-    private static int getProjectionCountForRandomChromosome(Genome reference, Genome query) {
+    private static long getProjectionCountForRandomChromosome(Genome reference, Genome query) {
         Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
         return ProjectionTest.countProjection(reference, randomGenome);
     }
