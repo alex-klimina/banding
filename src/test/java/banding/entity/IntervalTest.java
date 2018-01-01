@@ -48,4 +48,21 @@ public class IntervalTest {
         Interval interval2 = new Interval(7, 10);
         Interval.intervalsUnion(interval1, interval2);
     }
+
+    @Test
+    public void chouldComputeIntervalIntersection() {
+        Interval interval1 = new Interval(1, 10);
+        Interval interval2 = new Interval(5, 15);
+        Interval interval3 = new Interval(20, 30);
+
+        assertThat(Interval.intervalIntersection(interval1, interval2),
+                is(new Interval(5, 10)));
+        assertThat(Interval.intervalIntersection(interval2, interval1),
+                is(new Interval(5, 10)));
+        assertThat(Interval.intervalIntersection(interval1, interval3),
+                is(new Interval(-1, -1)));
+        assertThat(Interval.intervalIntersection(interval3, interval1),
+                is(new Interval(-1, -1)));
+    }
+
 }
