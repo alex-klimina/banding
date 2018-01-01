@@ -202,4 +202,36 @@ public class TrackTest {
 
         assertThat(track.getLength(), is(49L));
     }
+
+    @Test
+    public void shouldCheckThatNumberOfIntervalIsCorrect() {
+        Track track = new Track();
+        track.addInterval(new Interval(5, 20));
+        track.addInterval(new Interval(27, 42));
+        track.addInterval(new Interval(47, 62));
+        track.addInterval(new Interval(197, 212));
+        track.addInterval(new Interval(219, 234));
+        track.addInterval(new Interval(242, 257));
+
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Deque<Interval> intervalDeque = new ArrayDeque<>();
+        intervalDeque.add(interval1);
+        intervalDeque.add(interval2);
+        intervalDeque.add(interval3);
+
+        List<Interval> intervalList = new ArrayList<>();
+        intervalList.add(interval1);
+        intervalList.add(interval2);
+        intervalList.add(interval3);
+
+        Track trackCreatedByDeque = new Track(intervalDeque);
+        Track trackCreatedByList = new Track(intervalList);
+
+        assertThat(trackCreatedByDeque.getNumberOfIntervals(), is(3));
+        assertThat(trackCreatedByList.getNumberOfIntervals(), is(3));
+        assertThat(track.getNumberOfIntervals(), is(6));
+    }
 }
