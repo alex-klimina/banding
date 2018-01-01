@@ -84,4 +84,10 @@ public class IntervalTest {
         assertThat(interval2.compareTo(interval1), greaterThan(0));
         assertThat(interval1.compareTo(interval1), is(0));
     }
+
+    @Test
+    public void shouldCheckToString() {
+        Interval interval = new Interval(0, 10);
+        assertThat(interval.toString(), is("Interval(name=null, startIndex=0, endIndex=10)"));
+    }
 }
