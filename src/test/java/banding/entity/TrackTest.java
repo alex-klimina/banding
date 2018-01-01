@@ -47,4 +47,61 @@ public class TrackTest {
         Track trackCreatedByList = new Track(intervalList);
         assertArrayEquals(trackCreatedByDeque.getIntervals().toArray(), trackCreatedByList.getIntervals().toArray());
     }
+
+    @Test
+    public void checkStartOfTrackOnSortedTrack() {
+        Interval interval1 = new Interval(0, 4);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(14, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getTrackStart(), is(0L));
+    }
+
+    @Test
+    public void checkEndOfTrackOnSortedTrack() {
+        Interval interval1 = new Interval(0, 4);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(14, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getTrackEnd(), is(40L));
+    }
+
+    @Test
+    public void checkStartOfTrackOnUnsortedTrack() {
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getTrackStart(), is(6L));
+    }
+
+    @Test
+    public void checkEndOfTrackOnUnsortedTrack() {
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertThat(track.getTrackEnd(), is(54L));
+    }
+
 }
