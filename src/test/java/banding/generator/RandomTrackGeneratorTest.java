@@ -9,10 +9,13 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static banding.generator.RandomTrackGenerator.generateChromosomeSetByReferenceLike;
 import static banding.generator.RandomTrackGenerator.generateGenomeByReferenceLike;
 import static banding.generator.RandomTrackGenerator.generateRandomInterval;
 import static banding.generator.RandomTrackGenerator.generateRandomTrackLike;
@@ -157,12 +160,25 @@ public class RandomTrackGeneratorTest {
     }
 
     @Test
-    public void shouldGenerateRandomGenomeByreference() {
+    public void shouldGenerateRandomGenomeByReference() {
         Genome generatedGenome = generateGenomeByReferenceLike(genomeReference, genomeQuery);
         assertThat(generatedGenome.getNumberOfIntervals(), is(genomeQuery.getNumberOfIntervals()));
         assertThat(generatedGenome.getCoverage(), is(genomeQuery.getCoverage()));
         assertThat(generatedGenome.getLength(), is(genomeReference.getLength()));
     }
 
+
+    @Test
+    public void shouldGenerateChromosomeSetByReference() {
+        Map<String, Track> reference = new HashMap<>();
+        genomeReference.getChromosomes()
+                .forEach(x -> reference.put(x.getName(), x.getTrack()));
+        Map<String, Track> query = new HashMap<>();
+        genomeQuery.getChromosomes()
+                .forEach(x -> query.put(x.getName(), x.getTrack()));
+        Map<String, Track> generatedTrackMap = generateChromosomeSetByReferenceLike(reference, query);
+        assertThat(generatedTrackMap.get("chr1").getNumberOfIntervals(), is(genomeQuery.getChromosome("chr1").getNumberOfIntervals()));
+        assertThat(generatedTrackMap.get("chr1").getCoverage(), is(genomeQuery.getChromosome("chr1").getCoverage()));
+    }
 
 }
