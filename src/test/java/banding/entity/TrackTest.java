@@ -248,4 +248,12 @@ public class TrackTest {
 
         assertThat(track.getCoverage(), is(6L + 5L + 23L));
     }
+
+    @Test
+    public void checkToString() {
+        Track track = new Track();
+        track.addInterval(0, 9);
+        assertThat(track.toString(), is("Track(intervals=[Interval(name=null, startIndex=0, endIndex=9)])"));
+    }
+
 }
