@@ -9,7 +9,7 @@ import java.util.List;
 
 import static banding.entity.Track.areIntervalAndTrackIntersect;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
 
 public class TrackTest {
@@ -45,6 +45,6 @@ public class TrackTest {
 
         Track trackCreatedByDeque = new Track(intervalDeque);
         Track trackCreatedByList = new Track(intervalList);
-        assertEquals(trackCreatedByDeque.getIntervals().toArray(), trackCreatedByList.getIntervals().toArray());
+        assertArrayEquals(trackCreatedByDeque.getIntervals().toArray(), trackCreatedByList.getIntervals().toArray());
     }
 }
