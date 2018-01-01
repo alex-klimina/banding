@@ -82,21 +82,4 @@ public class JaccardTest {
                 .sum();
     }
 
-    public static void main(String[] args) throws IOException {
-        String ref = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_ref";
-        String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_CpG";
-
-        Deque<Interval> referenceIntervals = new IntervalReader(ref).read();
-        Deque<Interval> queryIntervals = new IntervalReader(query).read();
-
-        referenceIntervals = new ArrayDeque<>(referenceIntervals.stream()
-                .filter(x -> x.getName().equals("chr1"))
-                .collect(Collectors.toList()));
-
-        queryIntervals = new ArrayDeque<>(queryIntervals.stream()
-                .filter(x -> x.getName().equals("chr1"))
-                .collect(Collectors.toList()));
-
-        System.out.println(JaccardTest.computeJaccardStatisticForChromosome(queryIntervals, referenceIntervals));
-    }
 }

@@ -44,13 +44,4 @@ public class ProjectionTest {
                 .count();
     }
 
-    public static void main(String[] args) throws IOException {
-        String ref = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_ref";
-        String query = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/main/resources/hgTables_CpG";
-
-        Queue<Interval> referenceIntervals = new IntervalReader(ref).read();
-        Queue<Interval> queryIntervals = new IntervalReader(query).read();
-
-        System.out.println(ProjectionTest.countProjection(queryIntervals, referenceIntervals));
-    }
 }

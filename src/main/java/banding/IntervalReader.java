@@ -37,12 +37,4 @@ public class IntervalReader {
 
         return intervals;
     }
-
-    public static void main(String[] args) throws IOException {
-        String path = "/Users/alkli/Documents/Yandex.Disk/BioInstitute/banding/banding/src/test/resources/ref.txt";
-        Queue<Interval> intervals = new IntervalReader(path).read();
-        for (Interval interval: intervals) {
-            System.out.println(interval);
-        }
-    }
 }
