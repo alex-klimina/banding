@@ -42,4 +42,10 @@ public class ChromosomeTest {
     public void shouldGetNumberOfInterval() {
         assertThat(chr1.getNumberOfIntervals(), is(3));
     }
+
+    @Test
+    public void shouldCheckEquals() {
+        Chromosome chr1Copy = new Chromosome("chr1", track1, 0, 20);
+        assertEquals(chr1, chr1Copy);
+    }
 }
