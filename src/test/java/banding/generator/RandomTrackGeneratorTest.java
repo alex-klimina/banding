@@ -90,5 +90,16 @@ public class RandomTrackGeneratorTest {
 
     }
 
+    @Test (expected = RuntimeException.class)
+    public void shouldThrowRuntimeExceptionIfIntervalDoesNotFitInRange() {
+        Interval randomInterval = generateRandomInterval(15, 0, 10);
+    }
+
+    @Test
+    public void shouldCreateRandomIntervalWithLengthExactEqualsRange() {
+        Interval interval = generateRandomInterval(11, 0, 10);
+        assertThat(interval.getLength(), is(11L));
+    }
+
 
 }
