@@ -21,6 +21,7 @@ public class RandomTrackGenerator {
         return generatedGenome;
     }
 
+    // TODO removed this (use generateGenomeByReferenceLike(Genome reference, Genome query))
     public static Map<String, Track> generateChromosomeSetByReferenceLike(
             Map<String, Track> reference,
             Map<String, Track> query) {
