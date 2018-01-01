@@ -82,18 +82,6 @@ public class JaccardTestTest {
     }
 
     @Test
-    public void shouldReturnWhetherIntervalIntersectedOrNot() {
-        Interval interval1 = new Interval("", 0, 5);
-        Interval interval2 = new Interval("", 6, 10);
-        assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(false));
-
-        interval1 = new Interval("", 0, 8);
-        interval2 = new Interval("", 5, 10);
-        assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(true));
-
-    }
-
-    @Test
     public void shouldComputeUnionValueForChromosome() {
         Track referenceChr1 = new Track();
         referenceChr1.addInterval(new Interval(5, 55));
@@ -166,21 +154,6 @@ public class JaccardTestTest {
         queryMap.put("Chr2", queryChr2);
 
         assertThat(JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap), is(closeTo(0.672, 0.001)));
-    }
-
-    @Test
-    public void unionAndIntersectionForIdenticalTrackShouldBeEqual() {
-        Deque<Interval> track = new ArrayDeque<>();
-        track.add(new Interval(5, 20));
-        track.add(new Interval(27, 42));
-        track.add(new Interval(47, 62));
-        track.add(new Interval(197, 212));
-        track.add(new Interval(219, 234));
-        track.add(new Interval(242, 257));
-
-        Deque<Interval> intersection = Track.trackIntersection(track, track).collect(Collectors.toCollection(ArrayDeque::new));
-        Deque<Interval> union = Track.tracksUnion(track, track);
-        assertArrayEquals(intersection.toArray(), union.toArray());
     }
 
     @Test
