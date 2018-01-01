@@ -3,6 +3,8 @@ package banding.entity;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 
 public class IntervalTest {
@@ -65,4 +67,21 @@ public class IntervalTest {
                 is(new Interval(-1, -1)));
     }
 
+    @Test
+    public void shouldGetLengthOfInterval() {
+        Interval interval = new Interval(0, 10);
+        assertThat(interval.getLength(), is(11L));
+
+        interval = new Interval(3,3);
+        assertThat(interval.getLength(), is(1L));
+    }
+
+    @Test
+    public void shouldCompareInterval() {
+        Interval interval1 = new Interval(3, 5);
+        Interval interval2 = new Interval(6, 7);
+        assertThat(interval1.compareTo(interval2), lessThan(0));
+        assertThat(interval2.compareTo(interval1), greaterThan(0));
+        assertThat(interval1.compareTo(interval1), is(0));
+    }
 }
