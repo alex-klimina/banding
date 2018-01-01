@@ -18,4 +18,11 @@ public class IntervalTest {
         assertThat(Interval.areIntervalsIntersected(interval1, interval2), is(true));
 
     }
+
+    @Test
+    public void shouldComputeMiddleOfInterval() {
+        assertThat(Interval.middleOfInterval(new Interval(1, 5)), is(3L));
+        assertThat(Interval.middleOfInterval(new Interval(1, 1)), is(1L));
+        assertThat(Interval.middleOfInterval(new Interval(1, 6)), is(3L));
+    }
 }
