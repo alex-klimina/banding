@@ -157,7 +157,7 @@ public class TrackTest {
         expectedTrack.add(new Interval(5, 62));
         expectedTrack.add(new Interval(197, 257));
 
-        assertArrayEquals(Track.tracksUnion(reference, query).toArray(), expectedTrack.toArray());
+        assertArrayEquals(expectedTrack.toArray(), Track.tracksUnion(reference, query).toArray());
     }
 
     @Test
