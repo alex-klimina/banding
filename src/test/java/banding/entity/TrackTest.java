@@ -10,7 +10,9 @@ import java.util.List;
 import static banding.entity.Track.areIntervalAndTrackIntersect;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class TrackTest {
 
@@ -104,4 +106,35 @@ public class TrackTest {
         assertThat(track.getTrackEnd(), is(54L));
     }
 
+    @Test
+    public void checkThatTrackContainsPoint() {
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertTrue(track.containsPoint(6)); // start
+        assertTrue(track.containsPoint(20)); // middle
+        assertTrue(track.containsPoint(54)); // end
+    }
+
+    @Test
+    public void checkThatTrackDoesNotContainPoint() {
+        Interval interval1 = new Interval(50, 54);
+        Interval interval2 = new Interval(6, 12);
+        Interval interval3 = new Interval(18, 40);
+
+        Track track = new Track();
+        track.addInterval(interval1)
+                .addInterval(interval2)
+                .addInterval(interval3);
+
+        assertFalse(track.containsPoint(5)); // before start
+        assertFalse(track.containsPoint(45)); // not close to any of intervals
+        assertFalse(track.containsPoint(55)); // after end
+    }
 }
