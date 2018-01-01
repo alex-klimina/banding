@@ -146,7 +146,7 @@ public class TrackTest {
         reference.add(new Interval(204, 255));
 
         Deque<Interval> query = new ArrayDeque<>();
-        query.add(new Interval(5, 20));
+        query.add(new Interval(6, 20));
         query.add(new Interval(27, 42));
         query.add(new Interval(47, 62));
         query.add(new Interval(197, 212));
