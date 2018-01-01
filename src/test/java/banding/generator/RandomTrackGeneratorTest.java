@@ -1,13 +1,19 @@
 package banding.generator;
 
+import banding.entity.Chromosome;
+import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static banding.generator.RandomTrackGenerator.generateGenomeByReferenceLike;
 import static banding.generator.RandomTrackGenerator.generateRandomInterval;
 import static banding.generator.RandomTrackGenerator.generateRandomTrackLike;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -99,6 +105,63 @@ public class RandomTrackGeneratorTest {
     public void shouldCreateRandomIntervalWithLengthExactEqualsRange() {
         Interval interval = generateRandomInterval(11, 0, 10);
         assertThat(interval.getLength(), is(11L));
+    }
+
+    Track referenceTrack1;
+    Track referenceTrack2;
+    Chromosome referenceChr1;
+    Chromosome referenceChr2;
+    List<Chromosome> chromosomesReference;
+    Genome genomeReference;
+
+    Track queryTrack1;
+    Track queryTrack2;
+    Chromosome queryChr1;
+    Chromosome queryChr2;
+    List<Chromosome> chromosomesQuery;
+    Genome genomeQuery;
+
+    @Before
+    public void initialize() {
+        referenceTrack1 = new Track();
+        referenceTrack1.addInterval(0, 3)
+                .addInterval(5, 8)
+                .addInterval(10, 15);
+        referenceChr1 = new Chromosome("chr1", referenceTrack1, 0, 20);
+
+        referenceTrack2 = new Track();
+        referenceTrack2.addInterval(0, 3)
+                .addInterval(5, 8)
+                .addInterval(10, 15);
+        referenceChr2 = new Chromosome("chr2", referenceTrack2, 0, 30);
+
+        chromosomesReference = new ArrayList<>();
+        chromosomesReference.add(referenceChr1);
+        chromosomesReference.add(referenceChr2);
+
+        genomeReference = new Genome();
+        genomeReference.addChromosome(referenceChr1);
+        genomeReference.addChromosome(referenceChr2);
+
+        queryTrack1 = new Track();
+        queryTrack1.addInterval(4,7);
+        queryChr1 = new Chromosome("chr1", queryTrack1, 0, 20);
+        queryTrack2 = new Track();
+        queryTrack2.addInterval(8, 10);
+        queryChr2 = new Chromosome("chr2", queryTrack2, 0, 30);
+
+        chromosomesQuery = new ArrayList<>();
+        chromosomesQuery.add(queryChr1);
+        chromosomesQuery.add(queryChr2);
+        genomeQuery = new Genome(chromosomesQuery);
+    }
+
+    @Test
+    public void shouldGenerateRandomGenomeByreference() {
+        Genome generatedGenome = generateGenomeByReferenceLike(genomeReference, genomeQuery);
+        assertThat(generatedGenome.getNumberOfIntervals(), is(genomeQuery.getNumberOfIntervals()));
+        assertThat(generatedGenome.getCoverage(), is(genomeQuery.getCoverage()));
+        assertThat(generatedGenome.getLength(), is(genomeReference.getLength()));
     }
 
 
