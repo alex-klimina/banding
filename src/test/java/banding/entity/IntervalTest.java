@@ -50,7 +50,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void chouldComputeIntervalIntersection() {
+    public void shouldComputeIntervalIntersection() {
         Interval interval1 = new Interval(1, 10);
         Interval interval2 = new Interval(5, 15);
         Interval interval3 = new Interval(20, 30);
