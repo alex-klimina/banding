@@ -69,9 +69,9 @@ public abstract class ExperimentRunner {
         return tTest.tTest(report.getQueryTestValue().doubleValue(), getDoubleArray(testExperiments));
     }
 
-    private List<Long> getTestExperiments(Genome reference, Genome query, int numberOfExperiments) {
+    private List<Number> getTestExperiments(Genome reference, Genome query, int numberOfExperiments) {
         return generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
-                .stream().map(Number::longValue).collect(Collectors.toList());
+                .stream().collect(Collectors.toList());
     }
 
     protected abstract String getTestName();
