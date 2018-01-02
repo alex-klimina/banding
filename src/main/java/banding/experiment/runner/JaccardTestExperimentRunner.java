@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class JaccardTestExperimentRunner {
+public class JaccardTestExperimentRunner extends ExperimentRunner {
 
     public static Report getReportForJaccardTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
 
@@ -59,28 +59,4 @@ public class JaccardTestExperimentRunner {
         return JaccardTest.computeJaccardStatisticForGenome(reference, randomGenome);
     }
 
-    private static Genome generateRandomGenomeByReferenceLike(Genome reference, Genome query) {
-        Map<String, Track> referenceMap = new HashMap<>();
-        reference.getChromosomes().stream()
-                .forEach(x -> referenceMap.put(x.getName(), x.getTrack()));
-
-        Map<String, Track> queryMap = new HashMap<>();
-        query.getChromosomes().stream()
-                .forEach(x -> queryMap.put(x.getName(), x.getTrack()));
-
-        return RandomTrackGenerator.generateGenomeByReferenceLike(reference, query);
-    }
-
-
-    private static double[] getDoubleArray(List<? extends Number> list) {
-        double[] arr = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            arr[i] = list.get(i).doubleValue();
-        }
-        return arr;
-    }
-
-    private static JavaSparkContext getSparkContext(SparkSession spark) {
-        return JavaSparkContext.fromSparkContext(spark.sparkContext());
-    }
 }
