@@ -12,6 +12,13 @@ import java.util.Map;
 
 public abstract class ExperimentRunner {
 
+    protected Number getTestForRandomChromosome(Genome reference, Genome query) {
+        Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
+        return getTestValue(reference, randomGenome);
+    }
+
+    protected abstract Number getTestValue(Genome reference, Genome query);
+
     protected static Genome generateRandomGenomeByReferenceLike(Genome reference, Genome query) {
         Map<String, Track> referenceMap = new HashMap<>();
         reference.getChromosomes().stream()

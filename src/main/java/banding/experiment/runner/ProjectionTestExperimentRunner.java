@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public class ProjectionTestExperimentRunner extends ExperimentRunner {
 
-    public static Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
+    public Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
 
         Report report = new Report();
 
@@ -23,7 +23,7 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
         report.setReferenceCoverage(reference.getCoverage());
         report.setQueryProjectionTest(ProjectionTest.countProjection(reference, query));
 
-        List<Long> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, numberOfExperiments);
+        List<Long> projectionTestExperiments = generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments);
         report.setProjectionTestExperiments(
                 projectionTestExperiments);
 
@@ -43,19 +43,19 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
         return report;
     }
 
-    private static List<Long> generateRandomChromosomeSetsAndComputeProjectionTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+    private List<Long> generateRandomChromosomeSetsAndComputeTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
         int capacity = numberOfExperiments;
         List<Long> stats = IntStream.range(0, capacity).boxed()
                 .parallel()
-                .map(x -> getProjectionCountForRandomChromosome(referenceMap, queryMap))
+                .map(x -> getTestForRandomChromosome(referenceMap, queryMap))
+                .map(Number::longValue)
                 .collect(Collectors.toList());
         return stats;
     }
 
-    private static long getProjectionCountForRandomChromosome(Genome reference, Genome query) {
-        Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
-        return ProjectionTest.countProjection(reference, randomGenome);
+    protected Number getTestValue(Genome reference, Genome query) {
+        return ProjectionTest.countProjection(reference, query);
     }
 
 }
