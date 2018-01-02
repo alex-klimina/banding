@@ -20,26 +20,26 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
 
         report.setReferenceLength(reference.getLength());
         report.setReferenceCoverage(reference.getCoverage());
-        report.setQueryProjectionTest(ProjectionTest.countProjection(reference, query));
+        report.setQueryTestValue(ProjectionTest.countProjection(reference, query));
 
-        List<Long> projectionTestExperiments =
+        List<Long> testExperiments =
                 generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
                 .stream().map(Number::longValue).collect(Collectors.toList());
-        report.setProjectionTestExperiments(
-                projectionTestExperiments);
+        report.setTestExperiments(
+                testExperiments);
 
-        report.setMean(projectionTestExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf)));
-        report.setSumDev(projectionTestExperiments.stream()
+        report.setMean(testExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf)));
+        report.setSumDev(testExperiments.stream()
                 .map(x -> ((double) x - report.getMean()) * ((double) x - report.getMean()))
                 .collect(Collectors.summingDouble(Double::valueOf)));
         report.setSd(Math.sqrt(report.getSumDev() / numberOfExperiments));
 
-        JavaDoubleRDD rdd = getSparkContext(spark).parallelize(projectionTestExperiments).mapToDouble(Double::valueOf);
+        JavaDoubleRDD rdd = getSparkContext(spark).parallelize(testExperiments).mapToDouble(Double::valueOf);
         report.setKolmogorovSmirnovTestResult(
                 Statistics.kolmogorovSmirnovTest(rdd, "norm", report.getMean(), report.getSd()));
 
         TTest tTest = new TTest();
-        report.setTTestPValue(tTest.tTest(report.getQueryProjectionTest(), getDoubleArray(projectionTestExperiments)));
+        report.setTTestPValue(tTest.tTest(report.getQueryTestValue(), getDoubleArray(testExperiments)));
 
         return report;
     }

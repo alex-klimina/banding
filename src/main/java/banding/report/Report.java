@@ -11,8 +11,8 @@ public class Report {
     private String testName;
     private long referenceLength;
     private long referenceCoverage;
-    private long queryProjectionTest;
-    private List<Long> projectionTestExperiments;
+    private long queryTestValue;
+    private List<? extends Number> testExperiments;
     private Double mean;
     private Double sumDev;
     private double sd;
