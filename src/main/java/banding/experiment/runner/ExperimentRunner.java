@@ -32,7 +32,6 @@ public abstract class ExperimentRunner {
         report.setQueryTestValue(getTestValue(reference, query));
         report.setTestExperiments(testExperiments);
         report.setMean(getMean(testExperiments));
-        report.setSumDev(getSumOfDeviation(testExperiments));
         report.setSd(getStandardDeviation(testExperiments));
         report.setKolmogorovSmirnovTestResult(getKolmogorovSmirnovTestResult(spark, report, testExperiments));
         report.setTTestPValue(getTTestPValue(report, testExperiments));

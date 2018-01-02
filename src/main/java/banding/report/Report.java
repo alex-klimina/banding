@@ -14,7 +14,6 @@ public class Report {
     private Number queryTestValue;
     private List<? extends Number> testExperiments;
     private Double mean;
-    private Double sumDev;
     private double sd;
     private KolmogorovSmirnovTestResult kolmogorovSmirnovTestResult;
     private double tTestPValue;
