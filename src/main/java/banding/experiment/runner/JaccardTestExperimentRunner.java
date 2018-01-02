@@ -40,6 +40,11 @@ public class JaccardTestExperimentRunner extends ExperimentRunner {
     }
 
     @Override
+    protected String getTestName() {
+        return "Jaccard Test";
+    }
+
+    @Override
     protected Number getTestValue(Genome reference, Genome query) {
         return JaccardTest.computeJaccardStatisticForGenome(reference, query);
     }

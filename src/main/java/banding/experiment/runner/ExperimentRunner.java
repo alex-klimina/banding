@@ -23,7 +23,7 @@ public abstract class ExperimentRunner {
     public Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
 
         Report report = new Report();
-
+        report.setTestName(getTestName());
         report.setReferenceLength(reference.getLength());
         report.setReferenceCoverage(reference.getCoverage());
         report.setQueryTestValue(ProjectionTest.countProjection(reference, query));
@@ -53,6 +53,8 @@ public abstract class ExperimentRunner {
 
         return report;
     }
+
+    protected abstract String getTestName();
 
     protected List<Number> generateRandomChromosomeSetsAndComputeTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
 
