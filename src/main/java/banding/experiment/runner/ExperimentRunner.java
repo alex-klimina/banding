@@ -49,7 +49,7 @@ public abstract class ExperimentRunner {
                 Statistics.kolmogorovSmirnovTest(rdd, "norm", report.getMean(), report.getSd()));
 
         TTest tTest = new TTest();
-        report.setTTestPValue(tTest.tTest(report.getQueryTestValue(), getDoubleArray(testExperiments)));
+        report.setTTestPValue(tTest.tTest(report.getQueryTestValue().doubleValue(), getDoubleArray(testExperiments)));
 
         return report;
     }

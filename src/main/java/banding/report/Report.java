@@ -11,7 +11,7 @@ public class Report {
     private String testName;
     private long referenceLength;
     private long referenceCoverage;
-    private long queryTestValue;
+    private Number queryTestValue;
     private List<? extends Number> testExperiments;
     private Double mean;
     private Double sumDev;
