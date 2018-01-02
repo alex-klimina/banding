@@ -9,8 +9,20 @@ import org.apache.spark.sql.SparkSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class ExperimentRunner {
+
+    protected List<Number> generateRandomChromosomeSetsAndComputeTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+
+        int capacity = numberOfExperiments;
+        List<Number> stats = IntStream.range(0, capacity).boxed()
+                .parallel()
+                .map(x -> getTestForRandomChromosome(referenceMap, queryMap))
+                .collect(Collectors.toList());
+        return stats;
+    }
 
     protected Number getTestForRandomChromosome(Genome reference, Genome query) {
         Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);

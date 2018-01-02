@@ -11,7 +11,6 @@ import org.apache.spark.sql.SparkSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ProjectionTestExperimentRunner extends ExperimentRunner {
 
@@ -23,7 +22,9 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
         report.setReferenceCoverage(reference.getCoverage());
         report.setQueryProjectionTest(ProjectionTest.countProjection(reference, query));
 
-        List<Long> projectionTestExperiments = generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments);
+        List<Long> projectionTestExperiments =
+                generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
+                .stream().map(Number::longValue).collect(Collectors.toList());
         report.setProjectionTestExperiments(
                 projectionTestExperiments);
 
@@ -41,17 +42,6 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
         report.setTTestPValue(tTest.tTest(report.getQueryProjectionTest(), getDoubleArray(projectionTestExperiments)));
 
         return report;
-    }
-
-    private List<Long> generateRandomChromosomeSetsAndComputeTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
-
-        int capacity = numberOfExperiments;
-        List<Long> stats = IntStream.range(0, capacity).boxed()
-                .parallel()
-                .map(x -> getTestForRandomChromosome(referenceMap, queryMap))
-                .map(Number::longValue)
-                .collect(Collectors.toList());
-        return stats;
     }
 
     protected Number getTestValue(Genome reference, Genome query) {

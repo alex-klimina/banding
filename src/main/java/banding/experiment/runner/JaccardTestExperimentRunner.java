@@ -12,7 +12,6 @@ import org.apache.spark.sql.SparkSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class JaccardTestExperimentRunner extends ExperimentRunner {
 
@@ -22,7 +21,9 @@ public class JaccardTestExperimentRunner extends ExperimentRunner {
 
         double queryJaccardTest = JaccardTest.computeJaccardStatisticForGenome(reference, query);
 
-        List<Double> jaccardTestExperiments = generateRandomChromosomeSetsAndComputeJaccardTest(reference, query, numberOfExperiments);
+        List<Double> jaccardTestExperiments =
+                generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
+                .stream().map(Number::doubleValue).collect(Collectors.toList());
         Double mean = jaccardTestExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf));
         Double sumDev = jaccardTestExperiments.stream()
                 .map(x -> ((double) x - mean) * ((double) x - mean))
@@ -36,16 +37,6 @@ public class JaccardTestExperimentRunner extends ExperimentRunner {
         double tTestPValue = tTest.tTest(queryJaccardTest, getDoubleArray(jaccardTestExperiments));
 
         return report;
-    }
-
-    private List<Double> generateRandomChromosomeSetsAndComputeJaccardTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
-        int capacity = numberOfExperiments;
-        List<Double> stats = IntStream.range(0, capacity).boxed()
-                .parallel()
-                .map(x -> getTestForRandomChromosome(referenceMap, queryMap))
-                .map(Number::doubleValue)
-                .collect(Collectors.toList());
-        return stats;
     }
 
     @Override
