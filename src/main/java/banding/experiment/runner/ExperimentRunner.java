@@ -3,12 +3,12 @@ package banding.experiment.runner;
 import banding.entity.Genome;
 import banding.entity.Track;
 import banding.generator.RandomTrackGenerator;
-import banding.metric.ProjectionTest;
 import banding.report.Report;
 import org.apache.commons.math3.stat.inference.TTest;
 import org.apache.spark.api.java.JavaDoubleRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.stat.Statistics;
+import org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult;
 import org.apache.spark.sql.SparkSession;
 
 import java.io.IOException;
@@ -20,38 +20,60 @@ import java.util.stream.IntStream;
 
 public abstract class ExperimentRunner {
 
-    public Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
+    public Report getReportForTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) {
+
+        List<? extends Number> testExperiments =
+                getTestExperiments(reference, query, numberOfExperiments);
 
         Report report = new Report();
         report.setTestName(getTestName());
         report.setReferenceLength(reference.getLength());
         report.setReferenceCoverage(reference.getCoverage());
-        report.setQueryTestValue(ProjectionTest.countProjection(reference, query));
-
-        List<? extends Number> testExperiments =
-                generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
-                        .stream().map(Number::longValue).collect(Collectors.toList());
-
+        report.setQueryTestValue(getTestValue(reference, query));
         report.setTestExperiments(testExperiments);
-        report.setMean(testExperiments.stream()
-                .map(Number::doubleValue)
-                .collect(Collectors.averagingDouble(Double::valueOf)));
-        report.setSumDev(testExperiments.stream()
-                .map(Number::doubleValue)
-                .map(x -> (x - report.getMean()) * (x - report.getMean()))
-                .collect(Collectors.summingDouble(Double::valueOf)));
-        report.setSd(Math.sqrt(report.getSumDev() / numberOfExperiments));
+        report.setMean(getMean(testExperiments));
+        report.setSumDev(getSumOfDeviation(testExperiments));
+        report.setSd(getStandardDeviation(testExperiments));
+        report.setKolmogorovSmirnovTestResult(getKolmogorovSmirnovTestResult(spark, report, testExperiments));
+        report.setTTestPValue(getTTestPValue(report, testExperiments));
 
+        return report;
+    }
+
+    private Double getMean(List<? extends Number> testExperiments) {
+        return testExperiments.stream()
+                .map(Number::doubleValue)
+                .collect(Collectors.averagingDouble(Double::valueOf));
+    }
+
+    private Double getSumOfDeviation(List<? extends Number> testExperiments) {
+        Double mean = getMean(testExperiments);
+        return testExperiments.stream()
+                .map(Number::doubleValue)
+                .map(x -> (x - mean) * (x - mean))
+                .collect(Collectors.summingDouble(Double::valueOf));
+    }
+
+    private Double getStandardDeviation(List<? extends Number> testExperiments) {
+        Double sumOfDeviation = getSumOfDeviation(testExperiments);
+        return Math.sqrt(sumOfDeviation / testExperiments.size());
+    }
+
+    private KolmogorovSmirnovTestResult getKolmogorovSmirnovTestResult(SparkSession spark, Report report, List<? extends Number> testExperiments) {
         JavaDoubleRDD rdd = getSparkContext(spark)
                 .parallelize(testExperiments)
                 .mapToDouble(Number::doubleValue);
-        report.setKolmogorovSmirnovTestResult(
-                Statistics.kolmogorovSmirnovTest(rdd, "norm", report.getMean(), report.getSd()));
+        return Statistics.kolmogorovSmirnovTest(rdd, "norm", report.getMean(), report.getSd());
+    }
 
+    private double getTTestPValue(Report report, List<? extends Number> testExperiments) {
         TTest tTest = new TTest();
-        report.setTTestPValue(tTest.tTest(report.getQueryTestValue().doubleValue(), getDoubleArray(testExperiments)));
+        return tTest.tTest(report.getQueryTestValue().doubleValue(), getDoubleArray(testExperiments));
+    }
 
-        return report;
+    private List<Long> getTestExperiments(Genome reference, Genome query, int numberOfExperiments) {
+        return generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
+                .stream().map(Number::longValue).collect(Collectors.toList());
     }
 
     protected abstract String getTestName();
