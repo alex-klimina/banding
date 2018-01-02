@@ -11,7 +11,6 @@ import org.apache.spark.mllib.stat.Statistics;
 import org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult;
 import org.apache.spark.sql.SparkSession;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
