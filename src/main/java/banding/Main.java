@@ -55,9 +55,9 @@ public class Main {
         for (String queryPath: queryPaths) {
             Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
             String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
-            ProjectionTestExperimentRunner.getReportForProjectionTest(spark, reference, query, 1000);
+            new ProjectionTestExperimentRunner().getReportForProjectionTest(spark, reference, query, 1000);
             String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
-            JaccardTestExperimentRunner.getReportForJaccardTest(spark, reference, query, 1000);
+            new JaccardTestExperimentRunner().getReportForJaccardTest(spark, reference, query, 1000);
         }
     }
 
