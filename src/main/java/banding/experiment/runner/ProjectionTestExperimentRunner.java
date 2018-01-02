@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 
 public class ProjectionTestExperimentRunner {
 
-    private Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
+    public static Report getReportForProjectionTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
 
         Report report = new Report();
 
@@ -76,7 +76,7 @@ public class ProjectionTestExperimentRunner {
     }
 
 
-    private double[] getDoubleArray(List<? extends Number> list) {
+    private static double[] getDoubleArray(List<? extends Number> list) {
         double[] arr = new double[list.size()];
         for (int i = 0; i < list.size(); i++) {
             arr[i] = list.get(i).doubleValue();
@@ -84,7 +84,7 @@ public class ProjectionTestExperimentRunner {
         return arr;
     }
 
-    private JavaSparkContext getSparkContext(SparkSession spark) {
+    private static JavaSparkContext getSparkContext(SparkSession spark) {
         return JavaSparkContext.fromSparkContext(spark.sparkContext());
     }
 }

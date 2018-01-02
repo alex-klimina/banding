@@ -4,6 +4,7 @@ import banding.entity.Chromosome;
 import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.entity.Track;
+import banding.experiment.runner.ProjectionTestExperimentRunner;
 import banding.generator.RandomTrackGenerator;
 import banding.metric.JaccardTest;
 import banding.metric.ProjectionTest;
@@ -66,40 +67,10 @@ public class Main {
         for (String queryPath: queryPaths) {
             Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
             String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
-            main.getReportForProjectionTest(reference, query, outputProjectionTest);
+            ProjectionTestExperimentRunner.getReportForProjectionTest(spark, reference, query, 1000);
             String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
             main.getReportForJaccardTest(reference, query, outputJaccardTest);
         }
-    }
-
-    private void getReportForProjectionTest(Genome reference, Genome query, String output) throws IOException {
-        File file = new File(output);
-
-        addLineToFile(file, "Length of reference: " + reference.getLength());
-        addLineToFile(file, "Сoverage of reference: " + reference.getCoverage());
-        long queryProjectionTest = ProjectionTest.countProjection(reference, query);
-        addLineToFile(file, "ProjectionCount for query: "
-                + queryProjectionTest);
-
-        int n = 1000;
-        List<Long> projectionTestExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(reference, query, n);
-        addLineToFile(file, "ProjectionCount for random tracks by query:"
-                + projectionTestExperiments);
-
-        Double mean = projectionTestExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf));
-        Double sumDev = projectionTestExperiments.stream()
-                .map(x -> ((double) x - mean) * ((double) x - mean))
-                .collect(Collectors.summingDouble(Double::valueOf));
-        double sd = Math.sqrt(sumDev / n);
-
-        JavaDoubleRDD rdd = getSparkContext().parallelize(projectionTestExperiments).mapToDouble(Double::valueOf);
-        KolmogorovSmirnovTestResult result = Statistics.kolmogorovSmirnovTest(rdd, "norm", mean, sd);
-        addLineToFile(file, result.toString());
-
-        TTest tTest = new TTest();
-        double tTestPValue = tTest.tTest(queryProjectionTest, getDoubleArray(projectionTestExperiments));
-        addLineToFile(file, "pValue for query track: " + tTestPValue);
-
     }
 
     private void getReportForJaccardTest(Genome reference, Genome query, String output) throws IOException {
