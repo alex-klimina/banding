@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 public class JaccardTestExperimentRunner extends ExperimentRunner {
 
-    public static Report getReportForJaccardTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
+    public Report getReportForJaccardTest(SparkSession spark, Genome reference, Genome query, int numberOfExperiments) throws IOException {
 
         Report report = new Report();
 
@@ -38,18 +38,19 @@ public class JaccardTestExperimentRunner extends ExperimentRunner {
         return report;
     }
 
-    private static List<Double> generateRandomChromosomeSetsAndComputeJaccardTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
+    private List<Double> generateRandomChromosomeSetsAndComputeJaccardTest(Genome referenceMap, Genome queryMap, int numberOfExperiments) {
         int capacity = numberOfExperiments;
         List<Double> stats = IntStream.range(0, capacity).boxed()
                 .parallel()
-                .map(x -> getJaccardTestForRandomChromosome(referenceMap, queryMap))
+                .map(x -> getTestForRandomChromosome(referenceMap, queryMap))
+                .map(Number::doubleValue)
                 .collect(Collectors.toList());
         return stats;
     }
 
-    private static double getJaccardTestForRandomChromosome(Genome reference, Genome query) {
-        Genome randomGenome = generateRandomGenomeByReferenceLike(reference, query);
-        return JaccardTest.computeJaccardStatisticForGenome(reference, randomGenome);
+    @Override
+    protected Number getTestValue(Genome reference, Genome query) {
+        return JaccardTest.computeJaccardStatisticForGenome(reference, query);
     }
 
 }
