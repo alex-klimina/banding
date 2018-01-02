@@ -22,19 +22,23 @@ public class ProjectionTestExperimentRunner extends ExperimentRunner {
         report.setReferenceCoverage(reference.getCoverage());
         report.setQueryTestValue(ProjectionTest.countProjection(reference, query));
 
-        List<Long> testExperiments =
+        List<? extends Number> testExperiments =
                 generateRandomChromosomeSetsAndComputeTest(reference, query, numberOfExperiments)
                 .stream().map(Number::longValue).collect(Collectors.toList());
-        report.setTestExperiments(
-                testExperiments);
 
-        report.setMean(testExperiments.stream().collect(Collectors.averagingDouble(Double::valueOf)));
+        report.setTestExperiments(testExperiments);
+        report.setMean(testExperiments.stream()
+                .map(Number::doubleValue)
+                .collect(Collectors.averagingDouble(Double::valueOf)));
         report.setSumDev(testExperiments.stream()
-                .map(x -> ((double) x - report.getMean()) * ((double) x - report.getMean()))
+                .map(Number::doubleValue)
+                .map(x -> (x - report.getMean()) * (x - report.getMean()))
                 .collect(Collectors.summingDouble(Double::valueOf)));
         report.setSd(Math.sqrt(report.getSumDev() / numberOfExperiments));
 
-        JavaDoubleRDD rdd = getSparkContext(spark).parallelize(testExperiments).mapToDouble(Double::valueOf);
+        JavaDoubleRDD rdd = getSparkContext(spark)
+                .parallelize(testExperiments)
+                .mapToDouble(Number::doubleValue);
         report.setKolmogorovSmirnovTestResult(
                 Statistics.kolmogorovSmirnovTest(rdd, "norm", report.getMean(), report.getSd()));
 
