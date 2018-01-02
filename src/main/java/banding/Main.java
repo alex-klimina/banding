@@ -6,12 +6,14 @@ import banding.entity.Interval;
 import banding.entity.Track;
 import banding.experiment.runner.JaccardTestExperimentRunner;
 import banding.experiment.runner.ProjectionTestExperimentRunner;
-import org.apache.spark.api.java.JavaSparkContext;
+import banding.report.Report;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,13 +31,7 @@ public class Main {
             .appName("Banding")
             .getOrCreate();
 
-    private JavaSparkContext getSparkContext() {
-        return JavaSparkContext.fromSparkContext(spark.sparkContext());
-    }
-
     public static void main(String[] args) throws IOException {
-
-        Main main = new Main();
 
         DataFrameReader dataFrameReader = spark.read()
                 .format("com.databricks.spark.csv")
@@ -52,12 +48,20 @@ public class Main {
         queryPaths.add("src/main/resources/hgTables_layered_H3K4Me1.csv");
         queryPaths.add("src/main/resources/hgTables_microsatellit.csv");
 
+        int numberOfExperiments = 10;
+
         for (String queryPath: queryPaths) {
             Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
+
             String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
-            new ProjectionTestExperimentRunner().getReportForTest(spark, reference, query, 1000);
+            Report reportForProjectionTest = new ProjectionTestExperimentRunner()
+                    .getReportForTest(spark, reference, query, numberOfExperiments);
+            FileUtils.write(new File(outputProjectionTest), reportForProjectionTest.toString());
+
             String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
-            new JaccardTestExperimentRunner().getReportForTest(spark, reference, query, 1000);
+            Report reportForJaccardTest = new JaccardTestExperimentRunner()
+                    .getReportForTest(spark, reference, query, numberOfExperiments);
+            FileUtils.write(new File(outputJaccardTest), reportForJaccardTest.toString());
         }
     }
 
