@@ -150,24 +150,6 @@ public class Main {
         FileUtils.writeStringToFile(file, line + "\n", append);
     }
 
-    private static void computeProjectionTestForSeparateChromosomes(Genome reference, Genome query, int n) {
-        for (Chromosome c: reference.getChromosomes()) {
-            Genome tempGenome = new Genome(Collections.singletonList(c));
-            System.out.println(c.getName());
-            System.out.println(getExpectedValueForBinomialDistribution(
-                    tempGenome,
-                    new Genome(Collections.singletonList(query.getChromosome(c.getName())))));
-            List<Long> projectionTestRandomExperiments = generateRandomChromosomeSetsAndComputeProjectionTest(tempGenome, query, n);
-            DoubleSummaryStatistics summaryStatistics = getStatisticForExperiments(projectionTestRandomExperiments);
-            System.out.println("Summary statistic: " + summaryStatistics);
-            System.out.println(projectionTestRandomExperiments);
-        }
-    }
-
-    private static DoubleSummaryStatistics getStatisticForExperiments(List<Long> experiments) {
-        return experiments.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-    }
-
     private static double getExpectedValueForBinomialDistribution(Genome reference, Genome query) {
         double p = ((double) reference.getCoverage()) / ( (double) reference.getLength());
         long numberOfIntervals = query.getNumberOfIntervals();
@@ -213,47 +195,6 @@ public class Main {
                 .forEach(x -> queryMap.put(x.getName(), x.getTrack()));
 
         return RandomTrackGenerator.generateGenomeByReferenceLike(reference, query);
-    }
-
-    private static void generateRandomTrackAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
-        double jaccardStatistic;
-        int chr1End = 248956422;
-        Track chr1 = queryMap.get("chr1");
-        int capacity = 100;
-        List<Double> stats = new ArrayList<>(capacity);
-
-        for (int i = 0; i < capacity; i++) {
-            Track randomTrack = generateRandomTrackLike(chr1End, chr1);
-            jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosome(randomTrack, referenceMap.get("chr1"));
-            stats.add(jaccardStatistic);
-        }
-
-        System.out.println("Chr1: jaccardStatistic for CpG: " + JaccardTest.computeJaccardStatisticForChromosome(queryMap.get("chr1"), referenceMap.get("chr1")));
-        System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
-        DoubleSummaryStatistics summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-        System.out.println(summaryStatistics);
-    }
-
-    private static void generateRandomChromosomeSetsAndComputeJaccardStatistic(Map<String, Track> referenceMap, Map<String, Track> queryMap) {
-
-        System.out.println("======");
-        System.out.println("Whole genome");
-        double jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, queryMap);
-        System.out.println("jaccardStatistic for CpG: " + jaccardStatistic);
-
-        List<Double> stats;
-        DoubleSummaryStatistics summaryStatistics;
-        int capacity = 100;
-        stats = new ArrayList<>(capacity);
-
-        for (int i = 0; i < capacity; i++) {
-            Map<String, Track> randomChomosomes = RandomTrackGenerator.generateChromosomeSetByReferenceLike(referenceMap, queryMap);
-            jaccardStatistic = JaccardTest.computeJaccardStatisticForChromosomeSet(referenceMap, randomChomosomes);
-            stats.add(jaccardStatistic);
-        }
-        System.out.println("Chr1: jaccardStatistic for random tracks by CpG: \n");
-        summaryStatistics = stats.stream().collect(Collectors.summarizingDouble(Double::valueOf));
-        System.out.println(summaryStatistics);
     }
 
 
