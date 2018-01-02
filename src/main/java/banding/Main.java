@@ -57,7 +57,7 @@ public class Main {
             String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
             new ProjectionTestExperimentRunner().getReportForTest(spark, reference, query, 1000);
             String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
-            new JaccardTestExperimentRunner().getReportForJaccardTest(spark, reference, query, 1000);
+            new JaccardTestExperimentRunner().getReportForTest(spark, reference, query, 1000);
         }
     }
 
