@@ -9,6 +9,18 @@ repositories {
     mavenCentral()
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+
 dependencies {
     compile 'org.apache.commons:commons-csv:1.5'
     compile 'org.apache.spark:spark-core_2.11:2.1.0'
@@ -20,3 +32,13 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
 
+def mainClassName = "banding.Main"
+
+shadowJar {
+    zip64 true
+    archiveName = "banding.jar"
+
+    manifest {
+        attributes "Main-Class": "$mainClassName"
+    }
+}
