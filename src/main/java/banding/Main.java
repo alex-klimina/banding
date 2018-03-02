@@ -39,26 +39,23 @@ public class Main {
                 .option("inferSchema", "true")
                 .option("header", "true");
 
-        String referencePath = "src/main/resources/hgTables_ref_only_main.csv";
+        String referencePath = args[0];
         Genome reference = readReferenceTrackMapFromFile(dataFrameReader, referencePath);
 
         List<String> queryPaths = new ArrayList<>();
-        queryPaths.add("src/main/resources/hgTables_CpG.csv");
-        queryPaths.add("src/main/resources/hgTables_DNAse_HS.csv");
-        queryPaths.add("src/main/resources/hgTables_layered_H3K4Me1.csv");
-        queryPaths.add("src/main/resources/hgTables_microsatellit.csv");
+        queryPaths.add(args[1]);
 
         int numberOfExperiments = 10;
 
         for (String queryPath: queryPaths) {
             Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-            String outputProjectionTest = "reportProjectionTest_" + queryPath + "_.txt";
+            String outputProjectionTest = "reportProjectionTest_" + queryPath + ".txt";
             Report reportForProjectionTest = new ProjectionTestExperimentRunner()
                     .getReportForTest(spark, reference, query, numberOfExperiments);
             FileUtils.write(new File(outputProjectionTest), reportForProjectionTest.toString());
 
-            String outputJaccardTest = "reportJaccardTest_" + queryPath + "_.txt";
+            String outputJaccardTest = "reportJaccardTest_" + queryPath + ".txt";
             Report reportForJaccardTest = new JaccardTestExperimentRunner()
                     .getReportForTest(spark, reference, query, numberOfExperiments);
             FileUtils.write(new File(outputJaccardTest), reportForJaccardTest.toString());
