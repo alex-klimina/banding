@@ -65,7 +65,7 @@ public class Main {
         }
     }
 
-    private static Genome readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+    static Genome readQueryTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
 
         Dataset<Row> referenceDatasetStartEnd = dataFrameReader
                 .load(path)
@@ -102,7 +102,7 @@ public class Main {
         return new Genome(chromosomes);
     }
 
-    private static Genome readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
+    static Genome readReferenceTrackMapFromFile(DataFrameReader dataFrameReader, String path) {
         Dataset<Row> referenceDatasetStartEnd = dataFrameReader
                 .load(path)
                 .select("chrom", "chromStart", "chromEnd");
@@ -139,7 +139,7 @@ public class Main {
         return new Genome(chromosomes);
     }
 
-    private static class PairStartEnd {
+    static class PairStartEnd {
         long start;
         long end;
 
