@@ -45,7 +45,10 @@ public class Main {
         List<String> queryPaths = new ArrayList<>();
         queryPaths.add(args[1]);
 
-        int numberOfExperiments = 10;
+        int numberOfExperiments = 1000;
+        if (args[2] != null) {
+            numberOfExperiments = Integer.valueOf(args[2]);
+        }
 
         for (String queryPath: queryPaths) {
             Genome query = readQueryTrackMapFromFile(dataFrameReader, queryPath);
