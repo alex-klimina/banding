@@ -39,9 +39,9 @@ public class GraphBuilder {
         String queryPath = args[1];
         Genome query = Main.readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        int numberOfSplittedInterval = (args[2] != null) ? Integer.valueOf(args[2]) : 100;
+        int numberOfSplittedInterval = (args.length >= 3) ? Integer.valueOf(args[2]) : 100;
 
-        List<List<Long>> collect = reference.getChromosomes().stream()
+        List<List<Long>> collect = reference.getChromosomes().stream().parallel()
                 .flatMap(s -> getMetricValueForChromosome(reference, query, s.getName(), numberOfSplittedInterval).stream())
                 .collect(toList());
 
@@ -55,8 +55,8 @@ public class GraphBuilder {
         FileUtils.write(new File("outTable"), outTable);
 
 
-        List<Double> valueForGraph = new ArrayList<>(1000);
-        for (int i = 0; i < 1000; i++) {
+        List<Double> valueForGraph = new ArrayList<>(numberOfSplittedInterval);
+        for (int i = 0; i < numberOfSplittedInterval; i++) {
             int tempvar = i;
             Double average_i = collect.stream()
                     .map(list -> list.get(tempvar))
