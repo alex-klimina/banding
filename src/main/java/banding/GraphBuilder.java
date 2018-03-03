@@ -39,8 +39,10 @@ public class GraphBuilder {
         String queryPath = args[1];
         Genome query = Main.readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
+        int numberOfSplittedInterval = (args[2] != null) ? Integer.valueOf(args[2]) : 100;
+
         List<List<Long>> collect = reference.getChromosomes().stream()
-                .flatMap(s -> getMetricValueForChromosome(reference, query, s.getName()).stream())
+                .flatMap(s -> getMetricValueForChromosome(reference, query, s.getName(), numberOfSplittedInterval).stream())
                 .collect(toList());
 
 
@@ -70,15 +72,14 @@ public class GraphBuilder {
 
     }
 
-    static List<List<Long>> getMetricValueForChromosome(Genome reference, Genome query, String chromosomeName) {
+    static List<List<Long>> getMetricValueForChromosome(Genome reference, Genome query, String chromosomeName, int numberOfSplittedInterval) {
         Chromosome queryChromosome = query.getChromosome(chromosomeName);
         return reference.getChromosome(chromosomeName).getTrack().getIntervals().stream()
-                .map(referenceBand -> getValuesForBand(referenceBand, queryChromosome))
+                .map(referenceBand -> getValuesForBand(referenceBand, queryChromosome, numberOfSplittedInterval))
                 .collect(toList());
     }
 
-    static List<Long> getValuesForBand(Interval band, Chromosome queryChromosome) {
-        int numberOfSplittedInterval = 1000;
+    static List<Long> getValuesForBand(Interval band, Chromosome queryChromosome, int numberOfSplittedInterval) {
         long length = band.getLength();
         long lengthOfSubIntervals = length / numberOfSplittedInterval;
 
