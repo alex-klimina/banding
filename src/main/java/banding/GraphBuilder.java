@@ -32,26 +32,29 @@ public class GraphBuilder {
         String queryPath = args[1];
         Genome query = Main.readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        ProjectionTest.countProjection(reference, query);
-
+        int numberOfSplittedInterval = 1000;
+//        int numberOfSplittedInterval = 10;
         Interval chr1_1 = reference.getChromosome("chr1").getTrack().getIntervals().getFirst();
         long length = chr1_1.getLength();
-        long lengthOfSubIntervals = length / 1000;
+        long lengthOfSubIntervals = length / numberOfSplittedInterval;
 
 
         Chromosome queryChromosome = query.getChromosome("chr1");
         long countProjection = ProjectionTest.countProjection(chr1_1, queryChromosome);
         System.out.println("for whole band: " + countProjection);
 
-        List<Interval> splittedIntervals = IntStream.range(0, 1000).boxed()
-                .map(x -> new Interval(x * lengthOfSubIntervals, x * (lengthOfSubIntervals + 1) - 1))
+        List<Interval> splittedIntervals = IntStream.range(0, numberOfSplittedInterval).boxed()
+                .map(x -> new Interval( chr1_1.getStartIndex() + x * lengthOfSubIntervals,
+                                        chr1_1.getStartIndex() + (x + 1) * lengthOfSubIntervals - 1))
                 .collect(Collectors.toList());
 
         List<Long> values = splittedIntervals.stream()
                 .map(x -> ProjectionTest.countProjection(x, queryChromosome))
                 .collect(Collectors.toList());
 
-        System.out.println("for splitted band: " + values);
+        System.out.println("sourced band: " + chr1_1);
+//        System.out.println("Splitted intervals: " + splittedIntervals);
+//        System.out.println("for splitted band: " + values);
         System.out.println("Sum for splitted: " + values.stream().collect(Collectors.summingLong(Long::valueOf)));
 
     }
