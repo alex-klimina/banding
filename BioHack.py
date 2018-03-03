@@ -8,7 +8,7 @@ url = "dataForGraph"
 
 with open(url) as f:
     for line in f:
-        numbers_str = line.split("\t")
+        numbers_str = line.split(",")
         numbers_float = [float(x) for x in numbers_str]
 
 plt.plot(numbers_float)
