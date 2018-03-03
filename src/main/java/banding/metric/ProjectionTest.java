@@ -7,9 +7,11 @@ import banding.entity.Interval;
 import banding.entity.Track;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 
+import static banding.entity.Interval.isPointInInterval;
 import static banding.entity.Track.isPointInAnyIntervalOf;
 
 public class ProjectionTest {
@@ -44,4 +46,18 @@ public class ProjectionTest {
                 .count();
     }
 
+    public static long countProjection(Interval referenceInterval, Collection<Interval> queryIntervals) {
+        return queryIntervals.stream()
+                .map(Interval::middleOfInterval)
+                .filter(x -> isPointInInterval(x, referenceInterval))
+                .count();
+    }
+
+    public static long countProjection(Interval referenceInterval, Track query) {
+        return countProjection(referenceInterval, query.getIntervals());
+    }
+
+    public static long countProjection(Interval referenceInterval, Chromosome query) {
+        return countProjection(referenceInterval, query.getTrack());
+    }
 }
