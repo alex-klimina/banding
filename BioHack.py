@@ -4,12 +4,14 @@ import numpy as np
 import matplotlib 
 matplotlib.style.use('ggplot')
 
-#url = ссылка на файл или полный путь к файлу на компе, не забыть раскомментить эту штуку
-#читаем csv
-graph =  pd.read_csv(url, names = ['val','date'], index_col=[1], decimal=',',
-                 parse_dates = True, dayfirst = True) #отрисовываем график
+url = "dataForGraph"
 
-graph.plot()
-plt.savefig('graph.png', bbox_inches='tight') #сохраняем в формате png и удаляем пробельное изображение вокруг картинки из-за 
+with open(url) as f:
+    for line in f:
+        numbers_str = line.split("\t")
+        numbers_float = [float(x) for x in numbers_str]
+
+plt.plot(numbers_float)
+plt.savefig('graph.png', bbox_inches='tight') #сохраняем в формате png и удаляем пробельное изображение вокруг картинки из-за
 plt.show() #важным использовать plt.show после сохранения фигуры, иначе это не сработает
-plt.close()#способ предотвратить появление фигуры 
+plt.close()#способ предотвратить появление фигуры
