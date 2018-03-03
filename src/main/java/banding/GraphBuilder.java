@@ -10,10 +10,12 @@ import org.apache.spark.sql.SparkSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class GraphBuilder {
@@ -49,6 +51,22 @@ public class GraphBuilder {
                 .collect(Collectors.joining("\n"));
 
         FileUtils.write(new File("outTable"), outTable);
+
+
+        List<Double> valueForGraph = new ArrayList<>(1000);
+        for (int i = 0; i < 1000; i++) {
+            int tempvar = i;
+            Double average_i = collect.stream()
+                    .map(list -> list.get(tempvar))
+                    .collect(Collectors.averagingLong(Long::valueOf));
+            valueForGraph.add(i, average_i);
+        }
+
+        String stringForGraph = valueForGraph.stream()
+                .map(x -> x.toString())
+                .collect(joining(","));
+        FileUtils.write(new File("dataForGraph"), stringForGraph);
+
 
     }
 
