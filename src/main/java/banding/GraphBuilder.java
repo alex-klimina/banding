@@ -4,10 +4,14 @@ import banding.entity.Chromosome;
 import banding.entity.Genome;
 import banding.entity.Interval;
 import banding.metric.ProjectionTest;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.SparkSession;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -20,7 +24,7 @@ public class GraphBuilder {
             .appName("Banding")
             .getOrCreate();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         DataFrameReader dataFrameReader = spark.read()
                 .format("com.databricks.spark.csv")
                 .option("delimiter", "\t")
@@ -37,7 +41,14 @@ public class GraphBuilder {
                 .flatMap(s -> getMetricValueForChromosome(reference, query, s.getName()).stream())
                 .collect(toList());
 
-        collect.forEach(x -> System.out.println(x));
+
+        String outTable = collect.stream()
+                .map(band -> band.stream()
+                        .map(x -> x.toString())
+                        .collect(Collectors.joining(",")))
+                .collect(Collectors.joining("\n"));
+
+        FileUtils.write(new File("outTable"), outTable);
 
     }
 
