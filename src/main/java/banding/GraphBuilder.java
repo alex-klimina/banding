@@ -8,8 +8,9 @@ import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.SparkSession;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class GraphBuilder {
 
@@ -32,33 +33,34 @@ public class GraphBuilder {
         String queryPath = args[1];
         Genome query = Main.readQueryTrackMapFromFile(dataFrameReader, queryPath);
 
-        int numberOfSplittedInterval = 1000;
-//        int numberOfSplittedInterval = 10;
-        Interval chr1_1 = reference.getChromosome("chr1").getTrack().getIntervals().getFirst();
-        long length = chr1_1.getLength();
-        long lengthOfSubIntervals = length / numberOfSplittedInterval;
+        List<List<Long>> collect = reference.getChromosomes().stream()
+                .flatMap(s -> getMetricValueForChromosome(reference, query, s.getName()).stream())
+                .collect(toList());
 
-
-        Chromosome queryChromosome = query.getChromosome("chr1");
-        long countProjection = ProjectionTest.countProjection(chr1_1, queryChromosome);
-        System.out.println("for whole band: " + countProjection);
-
-        List<Interval> splittedIntervals = IntStream.range(0, numberOfSplittedInterval).boxed()
-                .map(x -> new Interval( chr1_1.getStartIndex() + x * lengthOfSubIntervals,
-                                        chr1_1.getStartIndex() + (x + 1) * lengthOfSubIntervals - 1))
-                .collect(Collectors.toList());
-
-        List<Long> values = splittedIntervals.stream()
-                .map(x -> ProjectionTest.countProjection(x, queryChromosome))
-                .collect(Collectors.toList());
-
-        System.out.println("sourced band: " + chr1_1);
-//        System.out.println("Splitted intervals: " + splittedIntervals);
-//        System.out.println("for splitted band: " + values);
-        System.out.println("Sum for splitted: " + values.stream().collect(Collectors.summingLong(Long::valueOf)));
+        collect.forEach(x -> System.out.println(x));
 
     }
 
+    static List<List<Long>> getMetricValueForChromosome(Genome reference, Genome query, String chromosomeName) {
+        Chromosome queryChromosome = query.getChromosome(chromosomeName);
+        return reference.getChromosome(chromosomeName).getTrack().getIntervals().stream()
+                .map(referenceBand -> getValuesForBand(referenceBand, queryChromosome))
+                .collect(toList());
+    }
 
+    static List<Long> getValuesForBand(Interval band, Chromosome queryChromosome) {
+        int numberOfSplittedInterval = 1000;
+        long length = band.getLength();
+        long lengthOfSubIntervals = length / numberOfSplittedInterval;
+
+        List<Interval> splittedIntervals = IntStream.range(0, numberOfSplittedInterval).boxed()
+                .map(x -> new Interval(band.getStartIndex() + x * lengthOfSubIntervals,
+                        band.getStartIndex() + (x + 1) * lengthOfSubIntervals - 1))
+                .collect(toList());
+
+        return splittedIntervals.stream()
+                .map(x -> ProjectionTest.countProjection(x, queryChromosome))
+                .collect(toList());
+    }
 
 }
